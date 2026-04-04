@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Tạp Hóa Tri Thức – Học thực chiến, làm được ngay</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛒</text></svg>">
   <script src="config.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -232,17 +233,28 @@
   let currentFilter = 'all';
 
   // ===== INIT =====
-  renderCourses();
-  updateCartCount();
-  loadCartFromStorage();
-  
-  // Check if should open cart (from preview page)
-  const urlParams = new URLSearchParams(window.location.search);
-  if (urlParams.get('cart') === 'open') {
-    setTimeout(() => toggleCart(), 500);
-  }
-  
-  // ===== LOAD CART FROM LOCALSTORAGE =====
+  document.addEventListener('DOMContentLoaded', function() {
+    renderCourses();
+    updateCartCount();
+    loadCartFromStorage();
+    
+    // Check if should open cart (from preview page)
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('cart') === 'open') {
+      setTimeout(() => toggleCart(), 500);
+    }
+    
+    // Update QR when email changes
+    const emailInput = document.getElementById('input-email');
+    if (emailInput) {
+      emailInput.addEventListener('input', function() {
+        const email = this.value.trim();
+        if (email) {
+          updateQRCode(email);
+        }
+      });
+    }
+  });
   function loadCartFromStorage() {
     const stored = localStorage.getItem('cart');
     if (stored) {
@@ -345,10 +357,8 @@
     document.getElementById('preview-price-original').textContent = formatPrice(course.originalPrice);
     document.getElementById('preview-price-sale').textContent = formatPrice(course.salePrice);
 
-    // Load video
-    if (course.videoDemo) {
-      document.getElementById('preview-video').src = course.videoDemo;
-    }
+    // Store video URL for opening in new tab
+    window.currentVideoUrl = course.videoDemo || '';
 
     // Render chapters
     if (course.chapters && course.chapters.length > 0) {
@@ -370,11 +380,26 @@
     window.scrollTo(0, 0);
   }
 
+  function openPreviewVideoInNewTab() {
+    if (window.currentVideoUrl) {
+      window.open(window.currentVideoUrl, '_blank');
+    } else {
+      showNotification('Video chưa có sẵn', 'info');
+    }
+  }
+
+  function openVideoInNewTab() {
+    if (window.currentVideoUrl) {
+      window.open(window.currentVideoUrl, '_blank');
+    } else {
+      showNotification('Video chưa có sẵn', 'info');
+    }
+  }
+
   function closePreview() {
     document.getElementById('preview-screen').classList.add('hidden');
     document.body.style.overflow = '';
-    // Clear video to stop playing
-    document.getElementById('preview-video').src = '';
+    window.currentVideoUrl = '';
   }
 
   function addToCartFromPreview() {
@@ -529,18 +554,8 @@
     transferContent.textContent = email ? `TAPHOA ${email}` : 'TAPHOA [Email]';
   }
 
-  // Update QR when email changes
-  document.addEventListener('DOMContentLoaded', function() {
-    const emailInput = document.getElementById('input-email');
-    if (emailInput) {
-      emailInput.addEventListener('input', function() {
-        const email = this.value.trim();
-        if (email) {
-          updateQRCode(email);
-        }
-      });
-    }
-  });
+  
+  // ===== LOAD CART FROM LOCALSTORAGE =====
 
   // ===== CONFIRM PAYMENT =====
   async function confirmPayment() {
@@ -727,8 +742,16 @@
           <span class="text-xl sm:text-2xl">🎬</span>
           <span class="text-base sm:text-xl">Video học thử miễn phí</span>
         </h3>
-        <div class="aspect-video bg-gray-900 rounded-xl sm:rounded-2xl overflow-hidden shadow-xl sm:shadow-2xl border-2 sm:border-4 border-primary-100">
-          <iframe id="detail-video" class="w-full h-full" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        <div class="aspect-video bg-gradient-to-br from-primary-600 to-purple-600 rounded-xl sm:rounded-2xl overflow-hidden shadow-xl sm:shadow-2xl border-2 sm:border-4 border-primary-100 relative group cursor-pointer" id="video-container" onclick="openVideoInNewTab()">
+          <div class="absolute inset-0 flex flex-col items-center justify-center text-white">
+            <div class="w-20 h-20 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+              <svg class="w-10 h-10" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z"/>
+              </svg>
+            </div>
+            <p class="text-lg font-bold">Click để xem video học thử</p>
+            <p class="text-sm text-white/80 mt-2">Video sẽ mở trong tab mới</p>
+          </div>
         </div>
         <p class="text-xs sm:text-sm text-gray-500 mt-2 sm:mt-3 text-center px-2">💡 Xem video học thử để hiểu rõ hơn về nội dung và chất lượng khóa học</p>
       </div>
@@ -822,8 +845,16 @@
             <span class="text-xl sm:text-2xl">🎬</span>
             <h2 class="text-base sm:text-xl font-bold text-gray-900">Video học thử miễn phí</h2>
           </div>
-          <div class="aspect-video bg-gray-900 rounded-lg sm:rounded-xl overflow-hidden shadow-lg">
-            <iframe id="preview-video" class="w-full h-full" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          <div class="aspect-video bg-gradient-to-br from-primary-600 to-purple-600 rounded-lg sm:rounded-xl overflow-hidden shadow-lg relative group cursor-pointer" id="preview-video-container" onclick="openPreviewVideoInNewTab()">
+            <div class="absolute inset-0 flex flex-col items-center justify-center text-white">
+              <div class="w-16 h-16 sm:w-20 sm:h-20 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center mb-3 sm:mb-4 group-hover:scale-110 transition-transform">
+                <svg class="w-8 h-8 sm:w-10 sm:h-10" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M8 5v14l11-7z"/>
+                </svg>
+              </div>
+              <p class="text-base sm:text-lg font-bold">Click để xem video học thử</p>
+              <p class="text-xs sm:text-sm text-white/80 mt-2">Video sẽ mở trong tab mới</p>
+            </div>
           </div>
           <div class="mt-3 sm:mt-4 bg-yellow-50 border border-yellow-200 rounded-lg sm:rounded-xl p-3 sm:p-4 flex items-start gap-2 sm:gap-3">
             <span class="text-xl sm:text-2xl flex-shrink-0">💡</span>
