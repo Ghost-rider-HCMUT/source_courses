@@ -30,24 +30,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       
-      - name: Create config.js from secrets
-        run: |
-          cat > config.js << 'EOF'
-          // Google Apps Script Configuration
-          window.GOOGLE_SCRIPT_URL = '${{ secrets.GOOGLE_SCRIPT_URL }}';
-          EOF
-          echo "✅ Created config.js with Google Script URL"
-      
-      - name: Verify config.js was created
-        run: |
-          if [ -f config.js ]; then
-            echo "✅ config.js exists"
-            echo "File size: $(wc -c < config.js) bytes"
-          else
-            echo "❌ config.js not found!"
-            exit 1
-          fi
-      
       - name: Setup Pages
         uses: actions/configure-pages@v5
       
