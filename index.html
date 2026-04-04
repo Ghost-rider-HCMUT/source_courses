@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tạp Hóa Tri Thức – Học thực chiến, làm được ngay</title>
+  <script src="config.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: { 50: '#eef2ff', 100: '#e0e7ff', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca' },
+            accent: { 400: '#fbbf24', 500: '#f59e0b', 600: '#d97706' }
+          },
+          animation: {
+            'fade-in': 'fadeIn 0.6s ease-out',
+            'slide-up': 'slideUp 0.5s ease-out',
+            'bounce-slow': 'bounce 2s infinite',
+            'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite'
+          },
+          keyframes: {
+            fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
+            slideUp: { '0%': { transform: 'translateY(20px)', opacity: '0' }, '100%': { transform: 'translateY(0)', opacity: '1' } }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    html { scroll-behavior: smooth; }
+    .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+    .card-hover { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+    .card-hover:hover { transform: translateY(-8px) scale(1.02); box-shadow: 0 20px 40px rgba(99,102,241,0.2); }
+    .badge-glow { box-shadow: 0 0 20px rgba(251, 191, 36, 0.5); }
+    .cart-badge { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+    .modal-backdrop { backdrop-filter: blur(8px); }
+    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+    .float-animation { animation: float 3s ease-in-out infinite; }
+    
+    /* Contact Buttons */
+    .contact-buttons { position: fixed; right: 16px; bottom: 80px; z-index: 40; display: flex; flex-direction: column; gap: 12px; }
+    @media (max-width: 640px) { .contact-buttons { right: 12px; bottom: 70px; gap: 10px; } }
+    
+    .contact-btn { 
+      width: 56px; height: 56px; border-radius: 50%; 
+      display: flex; align-items: center; justify-content: center; 
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15); 
+      transition: all 0.3s ease; cursor: pointer;
+      animation: shake 3s ease-in-out infinite;
+    }
+    @media (max-width: 640px) { .contact-btn { width: 48px; height: 48px; } }
+    
+    .contact-btn:hover { 
+      transform: scale(1.15) rotate(5deg); 
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+      animation: none;
+    }
+    
+    .contact-btn img, .contact-btn svg { width: 32px; height: 32px; }
+    @media (max-width: 640px) { .contact-btn img, .contact-btn svg { width: 28px; height: 28px; } }
+    
+    @keyframes shake {
+      0%, 100% { transform: rotate(0deg); }
+      10%, 30%, 50%, 70%, 90% { transform: rotate(-5deg); }
+      20%, 40%, 60%, 80% { transform: rotate(5deg); }
+    }
+    
+    @keyframes pulse-ring {
+      0% { transform: scale(0.8); opacity: 1; }
+      50% { transform: scale(1.2); opacity: 0.5; }
+      100% { transform: scale(0.8); opacity: 1; }
+    }
+    
+    .contact-btn::before {
+      content: '';
+      position: absolute;
+      inset: -4px;
+      border-radius: 50%;
+      background: inherit;
+      opacity: 0.3;
+      animation: pulse-ring 2s ease-in-out infinite;
+      z-index: -1;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans">
+
+<!-- ===== STICKY HEADER ===== -->
+<header class="sticky top-0 z-50 bg-white/95 backdrop-blur-md shadow-sm">
+  <div class="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 py-3 sm:py-4 flex items-center justify-between gap-2">
+    <a href="#" class="flex items-center gap-2 sm:gap-3 group min-w-0 flex-shrink">
+      <div class="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-primary-600 via-purple-600 to-pink-500 rounded-xl sm:rounded-2xl flex items-center justify-center transform group-hover:rotate-6 transition-all duration-300 shadow-lg flex-shrink-0">
+        <span class="text-white font-bold text-lg sm:text-xl">🛒</span>
+      </div>
+      <div class="min-w-0">
+        <span class="text-base sm:text-xl lg:text-2xl font-extrabold bg-gradient-to-r from-primary-600 via-purple-600 to-pink-500 bg-clip-text text-transparent tracking-tight block truncate">Tạp Hóa Kiến Thức</span>
+        <p class="text-[9px] sm:text-[10px] lg:text-[11px] text-gray-500 -mt-0.5 font-medium hidden xs:block">Học thực chiến • Giá sinh viên</p>
+      </div>
+    </a>
+    
+    <nav class="hidden md:flex items-center gap-4 lg:gap-8">
+      <a href="#home" class="text-xs lg:text-sm font-semibold text-gray-700 hover:text-primary-600 transition-colors relative group whitespace-nowrap">
+        Trang chủ
+        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary-600 group-hover:w-full transition-all duration-300"></span>
+      </a>
+      <a href="#courses" class="text-xs lg:text-sm font-semibold text-gray-700 hover:text-primary-600 transition-colors relative group whitespace-nowrap">
+        Khóa học
+        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary-600 group-hover:w-full transition-all duration-300"></span>
+      </a>
+      <a href="#categories" class="text-xs lg:text-sm font-semibold text-gray-700 hover:text-primary-600 transition-colors relative group whitespace-nowrap">
+        Danh mục
+        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary-600 group-hover:w-full transition-all duration-300"></span>
+      </a>
+    </nav>
+
+    <button onclick="toggleCart()" class="relative flex items-center gap-1 sm:gap-2 bg-gradient-to-r from-primary-600 to-purple-600 hover:from-primary-700 hover:to-purple-700 text-white px-2.5 sm:px-4 lg:px-5 py-2 sm:py-2.5 rounded-lg sm:rounded-xl transition-all shadow-lg hover:shadow-xl transform hover:scale-105 flex-shrink-0">
+      <span class="text-base sm:text-lg lg:text-xl">🛒</span>
+      <span class="hidden sm:inline text-xs lg:text-sm font-bold whitespace-nowrap">Giỏ hàng</span>
+      <span id="cart-count" class="absolute -top-1 sm:-top-2 -right-1 sm:-right-2 bg-yellow-400 text-primary-900 text-[9px] sm:text-xs font-extrabold w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 rounded-full flex items-center justify-center shadow-md">0</span>
+    </button>
+  </div>
+</header>
+
+<!-- ===== HERO SECTION ===== -->
+<section id="home" class="gradient-bg text-white py-20 px-4 sm:px-6 relative overflow-hidden">
+  <div class="absolute inset-0 opacity-10">
+    <div class="absolute top-10 left-10 w-72 h-72 bg-white rounded-full blur-3xl"></div>
+    <div class="absolute bottom-10 right-10 w-96 h-96 bg-yellow-300 rounded-full blur-3xl"></div>
+  </div>
+  
+  <div class="max-w-5xl mx-auto text-center relative z-10 animate-fade-in">
+    <span class="inline-block bg-white/20 backdrop-blur-sm text-white text-xs font-bold px-4 py-2 rounded-full mb-6 tracking-widest uppercase badge-glow">
+      � Khóa học cực rẻ – Chỉ từ 50-100k
+    </span>
+    <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold leading-tight mb-6">
+      Học kỹ năng chất lượng<br/>
+      <span class="text-yellow-300">với giá sinh viên</span>
+    </h1>
+    <p class="text-lg sm:text-xl text-white/90 max-w-2xl mx-auto mb-4 leading-relaxed">
+      Khóa học cũ được tổng hợp từ các chuyên gia hàng đầu. Học qua Google Drive, giá siêu rẻ chỉ 50-100k/khóa.
+    </p>
+    <p class="text-base text-yellow-200 max-w-2xl mx-auto mb-10 font-medium">
+      📌 Đầu tư vào bản thân là đầu tư sinh lời nhất! Chọn khóa học → Thêm vào giỏ → Thanh toán → Nhận link Drive ngay!
+    </p>
+    <a href="#courses" class="inline-block bg-white text-primary-700 font-bold px-8 py-4 rounded-2xl shadow-2xl hover:bg-yellow-300 hover:text-primary-800 transition-all duration-300 text-base transform hover:scale-105">
+      Khám phá khóa học ngay ↓
+    </a>
+  </div>
+</section>
+
+<!-- ===== CATEGORIES SECTION ===== -->
+<section id="categories" class="py-16 px-4 sm:px-6 bg-gradient-to-b from-white to-primary-50">
+  <div class="max-w-7xl mx-auto">
+    <div class="text-center mb-12">
+      <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900 mb-3">Danh mục khóa học</h2>
+      <p class="text-gray-600 text-base max-w-2xl mx-auto">Chọn lĩnh vực bạn muốn chinh phục. Mỗi khóa học đều có lộ trình rõ ràng.</p>
+    </div>
+    
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <!-- AI Category -->
+      <div class="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 card-hover cursor-pointer group" onclick="setFilter('ai')">
+        <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center mb-4 float-animation">
+          <span class="text-3xl">🤖</span>
+        </div>
+        <h3 class="text-xl font-bold text-gray-900 mb-2 group-hover:text-primary-600 transition-colors">Trí tuệ nhân tạo</h3>
+        <p class="text-sm text-gray-500 leading-relaxed">Machine Learning, Deep Learning, ChatGPT, AI thực chiến</p>
+        <div class="mt-4 text-primary-600 text-sm font-semibold group-hover:translate-x-2 transition-transform inline-block">Xem khóa học →</div>
+      </div>
+
+      <!-- Photoshop Category -->
+      <div class="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 card-hover cursor-pointer group" onclick="setFilter('design')">
+        <div class="w-16 h-16 bg-gradient-to-br from-pink-500 to-rose-500 rounded-2xl flex items-center justify-center mb-4 float-animation" style="animation-delay: 0.2s;">
+          <span class="text-3xl">🎨</span>
+        </div>
+        <h3 class="text-xl font-bold text-gray-900 mb-2 group-hover:text-primary-600 transition-colors">Thiết kế đồ họa</h3>
+        <p class="text-sm text-gray-500 leading-relaxed">Photoshop, Illustrator, Figma, UI/UX Design chuyên nghiệp</p>
+        <div class="mt-4 text-primary-600 text-sm font-semibold group-hover:translate-x-2 transition-transform inline-block">Xem khóa học →</div>
+      </div>
+
+      <!-- Marketing Category -->
+      <div class="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 card-hover cursor-pointer group" onclick="setFilter('marketing')">
+        <div class="w-16 h-16 bg-gradient-to-br from-orange-500 to-amber-500 rounded-2xl flex items-center justify-center mb-4 float-animation" style="animation-delay: 0.4s;">
+          <span class="text-3xl">📈</span>
+        </div>
+        <h3 class="text-xl font-bold text-gray-900 mb-2 group-hover:text-primary-600 transition-colors">Digital Marketing</h3>
+        <p class="text-sm text-gray-500 leading-relaxed">Facebook Ads, Google Ads, SEO, Content Marketing hiệu quả</p>
+        <div class="mt-4 text-primary-600 text-sm font-semibold group-hover:translate-x-2 transition-transform inline-block">Xem khóa học →</div>
+      </div>
+
+      <!-- Office Category -->
+      <div class="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 card-hover cursor-pointer group" onclick="setFilter('office')">
+        <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl flex items-center justify-center mb-4 float-animation" style="animation-delay: 0.6s;">
+          <span class="text-3xl">💼</span>
+        </div>
+        <h3 class="text-xl font-bold text-gray-900 mb-2 group-hover:text-primary-600 transition-colors">Tin học văn phòng</h3>
+        <p class="text-sm text-gray-500 leading-relaxed">Excel nâng cao, Word, PowerPoint, Google Workspace</p>
+        <div class="mt-4 text-primary-600 text-sm font-semibold group-hover:translate-x-2 transition-transform inline-block">Xem khóa học →</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // ===== CONFIG =====
+  const TELEGRAM_BOT_TOKEN = window.TELEGRAM_BOT_TOKEN || '';
+  const TELEGRAM_CHAT_ID   = window.TELEGRAM_CHAT_ID || '';
+
+  // ===== COURSE DATA =====
+  const courses = [
+    // AI Courses
+    { id: 1, title: 'AI & Machine Learning Toàn Tập', category: 'ai', desc: 'Từ cơ bản đến nâng cao: Python, TensorFlow, PyTorch. Xây dựng mô hình AI thực tế.', image: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=400&h=240&fit=crop', originalPrice: 150000, salePrice: 89000, badge: '🔥 Hot nhất', badgeColor: 'bg-red-100 text-red-600', lessons: 58, soldOut: true },
+    { id: 2, title: 'ChatGPT & Prompt Engineering', category: 'ai', desc: 'Làm chủ ChatGPT, viết prompt chuyên nghiệp, tự động hóa công việc với AI.', image: 'https://images.unsplash.com/photo-1676277791608-ac5c4c6c2e8a?w=400&h=240&fit=crop', originalPrice: 120000, salePrice: 69000, badge: '⚡ Mới nhất', badgeColor: 'bg-blue-100 text-blue-600', lessons: 32, soldOut: true },
+    
+    // Design Courses
+    { id: 3, title: 'Photoshop từ Zero đến Hero', category: 'design', desc: 'Chỉnh sửa ảnh chuyên nghiệp, thiết kế poster, banner, thumbnail bắt mắt.', image: 'https://images.unsplash.com/photo-1626785774573-4b799315345d?w=400&h=240&fit=crop', originalPrice: 130000, salePrice: 79000, badge: '💎 Bán chạy', badgeColor: 'bg-purple-100 text-purple-600', lessons: 45, soldOut: true },
+    { id: 4, title: 'UI/UX Design với Figma', category: 'design', desc: 'Thiết kế giao diện app, website đẹp mắt, chuẩn UX. Portfolio ấn tượng.', image: 'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=400&h=240&fit=crop', originalPrice: 140000, salePrice: 89000, badge: '🎨 Chuyên sâu', badgeColor: 'bg-pink-100 text-pink-600', lessons: 52, soldOut: true },
+    
+    // Marketing Courses
+    { id: 5, title: 'Video AI & Affiliate Marketing 2026', category: 'marketing', desc: 'Làm Affiliate bằng Video AI trên TikTok, Shopee. Xây kênh, bán hàng, kiếm tiền tự động.', image: 'https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?w=400&h=240&fit=crop', originalPrice: 150000, salePrice: 79000, badge: '🤖 AI + Affiliate', badgeColor: 'bg-indigo-100 text-indigo-600', lessons: 7, videoDemo: 'https://drive.google.com/file/d/1FicVJaxHaTSmKPzTqKA0Nlxpe4LY-RYW/preview', chapters: ['Chương 1: Tổng quan về Video AI & Affiliate', 'Chương 2: Làm Affiliate Shopee Bằng Video AI', 'Chương 3: Xây Fanpage Bán Hàng & Affiliate Shopee', 'Chương 4: Xây Kênh, Bán Hàng Và Làm Affiliate Bằng Video AI Trên TikTok', 'Chương 5: Phương Pháp Làm AI Mới 2026 – Luồng Làm Việc Tự Động', 'Chương 6: Hướng Dẫn Chi Tiết Cách Làm Video AI', 'Chương 7: Các Buổi Zoom Kiến Thức Thực Chiến'], soldOut: false },
+    { id: 6, title: 'Facebook Ads Thực Chiến', category: 'marketing', desc: 'Chạy quảng cáo Facebook hiệu quả, tối ưu chi phí, tăng doanh số x10.', image: 'https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=400&h=240&fit=crop', originalPrice: 110000, salePrice: 59000, badge: '📊 ROI cao', badgeColor: 'bg-orange-100 text-orange-600', lessons: 38, soldOut: true },
+    { id: 7, title: 'SEO & Content Marketing', category: 'marketing', desc: 'Đưa website lên top Google, viết content thu hút, tăng traffic tự nhiên.', image: 'https://images.unsplash.com/photo-1562577309-4932fdd64cd1?w=400&h=240&fit=crop', originalPrice: 120000, salePrice: 69000, badge: '🚀 Hiệu quả', badgeColor: 'bg-green-100 text-green-600', lessons: 42, soldOut: true },
+    
+    // Office Courses
+    { id: 8, title: 'Excel Nâng Cao cho Dân Văn Phòng', category: 'office', desc: 'Pivot Table, VBA, Dashboard, phân tích dữ liệu chuyên nghiệp.', image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=240&fit=crop', originalPrice: 100000, salePrice: 49000, badge: '💼 Thiết thực', badgeColor: 'bg-teal-100 text-teal-600', lessons: 35, soldOut: true },
+    { id: 9, title: 'Google Workspace Toàn Diện', category: 'office', desc: 'Gmail, Drive, Sheets, Docs, Meet. Làm việc nhóm hiệu quả trên cloud.', image: 'https://images.unsplash.com/photo-1573164713714-d95e436ab8d6?w=400&h=240&fit=crop', originalPrice: 90000, salePrice: 49000, badge: '☁️ Cloud', badgeColor: 'bg-sky-100 text-sky-600', lessons: 28, soldOut: true }
+  ];
+
+  // ===== CART STATE =====
+  let cart = [];
+  let currentFilter = 'all';
+
+  // ===== INIT =====
+  renderCourses();
+  updateCartCount();
+  loadCartFromStorage();
+  
+  // Check if should open cart (from preview page)
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('cart') === 'open') {
+    setTimeout(() => toggleCart(), 500);
+  }
+  
+  // ===== LOAD CART FROM LOCALSTORAGE =====
+  function loadCartFromStorage() {
+    const stored = localStorage.getItem('cart');
+    if (stored) {
+      try {
+        cart = JSON.parse(stored);
+        updateCartCount();
+      } catch (e) {
+        console.warn('Failed to load cart:', e);
+      }
+    }
+  }
+  
+  // Save cart to localStorage whenever it changes
+  function saveCartToStorage() {
+    localStorage.setItem('cart', JSON.stringify(cart));
+  }
+
+  // ===== RENDER COURSES =====
+  function renderCourses() {
+    const filtered = currentFilter === 'all' ? courses : courses.filter(c => c.category === currentFilter);
+    const grid = document.getElementById('course-grid');
+    if (!grid) return;
+    
+    grid.innerHTML = filtered.map(c => `
+      <div class="bg-white rounded-2xl overflow-hidden shadow-md border border-gray-100 card-hover flex flex-col ${c.soldOut ? 'opacity-60' : ''}">
+        <div class="relative overflow-hidden group ${c.soldOut ? '' : 'cursor-pointer'}" onclick="${c.soldOut ? '' : `viewCourseDetail(${c.id})`}">
+          <img src="${c.image}" alt="${c.title}" class="w-full h-52 object-cover ${c.soldOut ? '' : 'group-hover:scale-110 transition-transform duration-500'}" />
+          ${c.soldOut 
+            ? '<div class="absolute inset-0 bg-black/50 flex items-center justify-center"><span class="bg-gray-800 text-white px-4 py-2 rounded-full text-sm font-bold">⏳ Đang cập nhật</span></div>'
+            : `<span class="absolute top-3 left-3 text-xs font-bold px-3 py-1.5 rounded-full ${c.badgeColor} backdrop-blur-sm">${c.badge}</span>
+               <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                 <span class="text-white font-semibold text-sm bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full">👁️ Xem chi tiết</span>
+               </div>`
+          }
+        </div>
+        <div class="p-5 flex flex-col flex-1">
+          <h3 class="font-bold text-gray-900 text-base mb-2 leading-snug line-clamp-2 ${c.soldOut ? '' : 'cursor-pointer hover:text-primary-600 transition-colors'}" onclick="${c.soldOut ? '' : `viewCourseDetail(${c.id})`}">${c.title}</h3>
+          <p class="text-gray-500 text-sm leading-relaxed flex-1 line-clamp-2">${c.desc}</p>
+          <div class="mt-4 flex items-center gap-2 text-xs text-gray-400">
+            <span>📚 ${c.lessons} bài</span>
+            <span>•</span>
+            <span>☁️ Google Drive</span>
+          </div>
+          <div class="mt-4 flex items-end justify-between">
+            <div>
+              <span class="line-through text-gray-400 text-xs">${formatPrice(c.originalPrice)}</span>
+              <div class="text-primary-600 font-extrabold text-xl">${formatPrice(c.salePrice)}</div>
+            </div>
+            ${c.soldOut 
+              ? '<button disabled class="bg-gray-300 text-gray-500 text-sm font-semibold px-5 py-2.5 rounded-xl cursor-not-allowed">Đang cập nhật</button>'
+              : `<button onclick="addToCart(${c.id})" class="bg-primary-600 hover:bg-primary-700 text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition-all shadow-md hover:shadow-lg transform hover:scale-105">Thêm vào giỏ</button>`
+            }
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function formatPrice(price) {
+    return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price);
+  }
+
+  function filterCategory(cat) {
+    currentFilter = cat;
+    renderCourses();
+    document.getElementById('courses').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  function setFilter(cat) {
+    currentFilter = cat;
+    
+    // Update button styles
+    const buttons = ['all', 'ai', 'design', 'marketing', 'office'];
+    buttons.forEach(btn => {
+      const el = document.getElementById(`filter-${btn}`);
+      if (el) {
+        if (btn === cat) {
+          el.className = 'px-4 py-2 rounded-full text-sm font-medium bg-primary-600 text-white hover:bg-primary-700 transition';
+        } else {
+          el.className = 'px-4 py-2 rounded-full text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 transition';
+        }
+      }
+    });
+    
+    renderCourses();
+    document.getElementById('courses').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  // ===== COURSE DETAIL MODAL =====
+  function viewCourseDetail(courseId) {
+    const course = courses.find(c => c.id === courseId);
+    if (!course) return;
+
+    // Populate preview screen
+    document.getElementById('preview-badge').textContent = course.badge;
+    document.getElementById('preview-badge').className = `inline-block text-xs font-bold px-3 py-1.5 rounded-full ${course.badgeColor} mb-3`;
+    document.getElementById('preview-title').textContent = course.title;
+    document.getElementById('preview-desc').textContent = course.desc;
+    document.getElementById('preview-lessons').textContent = course.lessons;
+    document.getElementById('preview-price-original').textContent = formatPrice(course.originalPrice);
+    document.getElementById('preview-price-sale').textContent = formatPrice(course.salePrice);
+
+    // Load video
+    if (course.videoDemo) {
+      document.getElementById('preview-video').src = course.videoDemo;
+    }
+
+    // Render chapters
+    if (course.chapters && course.chapters.length > 0) {
+      const chaptersContainer = document.getElementById('preview-chapters');
+      chaptersContainer.innerHTML = course.chapters.map((ch, idx) => `
+        <div class="flex items-start gap-3 p-3 bg-primary-50 rounded-lg hover:bg-primary-100 transition-all border border-primary-100">
+          <div class="w-8 h-8 bg-gradient-to-br from-primary-500 to-purple-500 text-white rounded-lg flex items-center justify-center font-bold text-sm flex-shrink-0">${idx + 1}</div>
+          <span class="text-sm text-gray-800 leading-relaxed pt-1">${ch}</span>
+        </div>
+      `).join('');
+    }
+
+    // Store current course for add to cart
+    window.currentPreviewCourse = courseId;
+
+    // Show preview screen and hide main content
+    document.getElementById('preview-screen').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+    window.scrollTo(0, 0);
+  }
+
+  function closePreview() {
+    document.getElementById('preview-screen').classList.add('hidden');
+    document.body.style.overflow = '';
+    // Clear video to stop playing
+    document.getElementById('preview-video').src = '';
+  }
+
+  function addToCartFromPreview() {
+    if (window.currentPreviewCourse) {
+      addToCart(window.currentPreviewCourse);
+      closePreview();
+    }
+  }
+
+  // ===== CART FUNCTIONS =====
+  function addToCart(courseId) {
+    const course = courses.find(c => c.id === courseId);
+    const existing = cart.find(item => item.id === courseId);
+    
+    if (existing) {
+      existing.quantity++;
+    } else {
+      cart.push({ ...course, quantity: 1 });
+    }
+    
+    updateCartCount();
+    saveCartToStorage();
+    showNotification(`Đã thêm "${course.title}" vào giỏ hàng!`);
+  }
+
+  function removeFromCart(courseId) {
+    cart = cart.filter(item => item.id !== courseId);
+    updateCartCount();
+    saveCartToStorage();
+    renderCartItems();
+  }
+
+  function updateQuantity(courseId, delta) {
+    const item = cart.find(c => c.id === courseId);
+    if (!item) return;
+    
+    item.quantity += delta;
+    if (item.quantity <= 0) {
+      removeFromCart(courseId);
+    } else {
+      updateCartCount();
+      saveCartToStorage();
+      renderCartItems();
+    }
+  }
+
+  function updateCartCount() {
+    const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+    document.getElementById('cart-count').textContent = count;
+  }
+
+  function calculateTotal() {
+    return cart.reduce((sum, item) => sum + (item.salePrice * item.quantity), 0);
+  }
+
+  // ===== CART MODAL =====
+  function toggleCart() {
+    const modal = document.getElementById('cart-modal');
+    const isHidden = modal.classList.contains('hidden');
+    
+    if (isHidden) {
+      renderCartItems();
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      document.body.style.overflow = 'hidden';
+    } else {
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+      document.body.style.overflow = '';
+    }
+  }
+
+  function renderCartItems() {
+    const container = document.getElementById('cart-items');
+    const emptyState = document.getElementById('cart-empty');
+    const cartContent = document.getElementById('cart-content');
+    
+    if (cart.length === 0) {
+      emptyState.classList.remove('hidden');
+      cartContent.classList.add('hidden');
+      return;
+    }
+    
+    emptyState.classList.add('hidden');
+    cartContent.classList.remove('hidden');
+    
+    container.innerHTML = cart.map(item => `
+      <div class="flex gap-4 p-4 bg-gray-50 rounded-xl border border-gray-100">
+        <img src="${item.image}" alt="${item.title}" class="w-20 h-20 object-cover rounded-lg" />
+        <div class="flex-1">
+          <h4 class="font-semibold text-gray-900 text-sm mb-1 line-clamp-2">${item.title}</h4>
+          <p class="text-primary-600 font-bold text-base">${formatPrice(item.salePrice)}</p>
+          <div class="flex items-center gap-2 mt-2">
+            <button onclick="updateQuantity(${item.id}, -1)" class="w-7 h-7 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 transition text-sm font-bold">−</button>
+            <span class="text-sm font-semibold w-8 text-center">${item.quantity}</span>
+            <button onclick="updateQuantity(${item.id}, 1)" class="w-7 h-7 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 transition text-sm font-bold">+</button>
+            <button onclick="removeFromCart(${item.id})" class="ml-auto text-red-500 hover:text-red-700 text-xs font-medium">Xóa</button>
+          </div>
+        </div>
+      </div>
+    `).join('');
+    
+    document.getElementById('cart-total').textContent = formatPrice(calculateTotal());
+  }
+
+  function proceedToCheckout() {
+    if (cart.length === 0) return;
+    toggleCart();
+    openCheckoutModal();
+  }
+
+  // ===== CHECKOUT MODAL =====
+  function openCheckoutModal() {
+    const modal = document.getElementById('checkout-modal');
+    const total = calculateTotal();
+    
+    document.getElementById('checkout-total').textContent = formatPrice(total);
+    document.getElementById('checkout-items-summary').innerHTML = cart.map(item => 
+      `<div class="flex justify-between text-sm"><span>${item.title} x${item.quantity}</span><span class="font-semibold">${formatPrice(item.salePrice * item.quantity)}</span></div>`
+    ).join('');
+    
+    document.getElementById('input-email').value = '';
+    document.getElementById('input-phone').value = '';
+    document.getElementById('email-error').classList.add('hidden');
+    
+    // Reset QR code to default
+    updateQRCode('');
+    
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeCheckoutModal() {
+    const modal = document.getElementById('checkout-modal');
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+    document.body.style.overflow = '';
+  }
+
+  // Update QR code with email
+  function updateQRCode(email) {
+    const total = calculateTotal();
+    const content = email ? `TAPHOA ${email}` : 'TAPHOA';
+    const qrImage = document.getElementById('qr-code-image');
+    const transferContent = document.getElementById('transfer-content');
+    
+    // Update QR code using VietQR API
+    qrImage.src = `https://img.vietqr.io/image/VCB-1020058102-compact2.png?amount=${total}&addInfo=${encodeURIComponent(content)}`;
+    
+    // Update transfer content display
+    transferContent.textContent = email ? `TAPHOA ${email}` : 'TAPHOA [Email]';
+  }
+
+  // Update QR when email changes
+  document.addEventListener('DOMContentLoaded', function() {
+    const emailInput = document.getElementById('input-email');
+    if (emailInput) {
+      emailInput.addEventListener('input', function() {
+        const email = this.value.trim();
+        if (email) {
+          updateQRCode(email);
+        }
+      });
+    }
+  });
+
+  // ===== CONFIRM PAYMENT =====
+  async function confirmPayment() {
+    const emailInput = document.getElementById('input-email');
+    const email = emailInput.value.trim();
+    const phone = document.getElementById('input-phone').value.trim();
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!email || !emailRegex.test(email)) {
+      emailInput.focus();
+      emailInput.classList.add('ring-2', 'ring-red-400', 'border-red-300');
+      document.getElementById('email-error').classList.remove('hidden');
+      setTimeout(() => {
+        emailInput.classList.remove('ring-2', 'ring-red-400', 'border-red-300');
+        document.getElementById('email-error').classList.add('hidden');
+      }, 3000);
+      return;
+    }
+
+    // Build order summary
+    const orderSummary = cart.map(item => `${item.title} x${item.quantity} = ${formatPrice(item.salePrice * item.quantity)}`).join('\n');
+    const total = calculateTotal();
+
+    // Send Telegram notification
+    if (TELEGRAM_BOT_TOKEN && TELEGRAM_CHAT_ID) {
+      const message =
+        `🛒 *ĐƠN HÀNG MỚI – Tạp Hóa Kiến Thức*\n\n` +
+        `📦 *Chi tiết đơn hàng:*\n${orderSummary}\n\n` +
+        `💰 *Tổng tiền:* ${formatPrice(total)}\n\n` +
+        `📧 *Email:* ${email}\n` +
+        `📱 *SĐT:* ${phone || 'Không cung cấp'}\n\n` +
+        `⚠️ *Lưu ý:* Gửi link Google Drive các khóa học đã mua về email khách hàng!`;
+
+      try {
+        await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            chat_id: TELEGRAM_CHAT_ID,
+            text: message,
+            parse_mode: 'Markdown'
+          })
+        });
+      } catch (err) {
+        console.warn('Telegram notify failed:', err);
+      }
+    }
+
+    closeCheckoutModal();
+    cart = [];
+    updateCartCount();
+    saveCartToStorage();
+    showNotification('Cảm ơn bạn! Chúng tôi sẽ gửi link Google Drive các khóa học qua Email trong vài phút. Kiểm tra cả hộp thư spam nhé!', 'success');
+  }
+
+  // ===== NOTIFICATION =====
+  function showNotification(message, type = 'info') {
+    const notif = document.createElement('div');
+    notif.className = `fixed top-20 right-4 z-[60] bg-white border-l-4 ${type === 'success' ? 'border-green-500' : 'border-primary-500'} shadow-xl rounded-lg p-4 max-w-sm animate-slide-up`;
+    notif.innerHTML = `
+      <div class="flex items-start gap-3">
+        <span class="text-2xl">${type === 'success' ? '✅' : '🛒'}</span>
+        <div class="flex-1">
+          <p class="text-sm font-medium text-gray-900">${message}</p>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(notif);
+    setTimeout(() => notif.remove(), 3000);
+  }
+
+  // Close modals on backdrop click
+  document.addEventListener('click', (e) => {
+    if (e.target.id === 'cart-modal') toggleCart();
+    if (e.target.id === 'checkout-modal') closeCheckoutModal();
+    if (e.target.id === 'detail-modal') closeDetailModal();
+  });
+</script>
+
+<!-- ===== COURSES SECTION ===== -->
+<section id="courses" class="py-20 px-4 sm:px-6 bg-white">
+  <div class="max-w-7xl mx-auto">
+    <div class="text-center mb-12">
+      <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900 mb-3">Khóa học siêu rẻ</h2>
+      <p class="text-gray-600 text-base max-w-2xl mx-auto mb-2">Khóa học cũ chất lượng cao từ các chuyên gia. Học qua Google Drive, giá chỉ 50-100k/khóa.</p>
+      <p class="text-sm text-primary-600 font-semibold">💡 Hướng dẫn: Chọn khóa học → Thêm vào giỏ → Thanh toán → Nhận link Google Drive qua Email ngay!</p>
+      <div class="flex flex-wrap justify-center gap-2 mt-6">
+        <button onclick="setFilter('all')" id="filter-all" class="px-4 py-2 rounded-full text-sm font-medium bg-primary-600 text-white hover:bg-primary-700 transition">Tất cả</button>
+        <button onclick="setFilter('ai')" id="filter-ai" class="px-4 py-2 rounded-full text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 transition">AI</button>
+        <button onclick="setFilter('design')" id="filter-design" class="px-4 py-2 rounded-full text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 transition">Thiết kế</button>
+        <button onclick="setFilter('marketing')" id="filter-marketing" class="px-4 py-2 rounded-full text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 transition">Marketing</button>
+        <button onclick="setFilter('office')" id="filter-office" class="px-4 py-2 rounded-full text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 transition">Văn phòng</button>
+      </div>
+    </div>
+    <div id="course-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"></div>
+  </div>
+</section>
+
+<!-- ===== TESTIMONIALS ===== -->
+<section class="bg-gradient-to-br from-primary-50 to-purple-50 py-16 px-4 sm:px-6">
+  <div class="max-w-6xl mx-auto">
+    <h2 class="text-3xl font-extrabold text-center text-gray-900 mb-12">Học viên nói gì?</h2>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="bg-white rounded-2xl p-6 shadow-md hover:shadow-xl transition-shadow">
+        <div class="text-yellow-400 text-sm mb-3">★★★★★</div>
+        <p class="text-gray-600 text-sm leading-relaxed mb-4">"Khóa AI thực sự chất lượng! Sau 3 tháng mình đã tự build được chatbot cho công ty. Giảng viên support rất tận tâm."</p>
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-cyan-400 flex items-center justify-center text-white font-bold">A</div>
+          <div>
+            <div class="text-sm font-semibold text-gray-800">Anh Tuấn</div>
+            <div class="text-xs text-gray-400">AI Engineer</div>
+          </div>
+        </div>
+      </div>
+      <div class="bg-white rounded-2xl p-6 shadow-md hover:shadow-xl transition-shadow">
+        <div class="text-yellow-400 text-sm mb-3">★★★★★</div>
+        <p class="text-gray-600 text-sm leading-relaxed mb-4">"Khóa Photoshop giúp mình tự tin nhận job freelance. Bài tập thực tế, học xong là làm được ngay!"</p>
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-full bg-gradient-to-br from-pink-400 to-rose-400 flex items-center justify-center text-white font-bold">L</div>
+          <div>
+            <div class="text-sm font-semibold text-gray-800">Linh Chi</div>
+            <div class="text-xs text-gray-400">Graphic Designer</div>
+          </div>
+        </div>
+      </div>
+      <div class="bg-white rounded-2xl p-6 shadow-md hover:shadow-xl transition-shadow">
+        <div class="text-yellow-400 text-sm mb-3">★★★★★</div>
+        <p class="text-gray-600 text-sm leading-relaxed mb-4">"Facebook Ads course giúp mình scale doanh thu từ 50tr lên 500tr/tháng. ROI cực kỳ cao!"</p>
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-full bg-gradient-to-br from-orange-400 to-amber-400 flex items-center justify-center text-white font-bold">M</div>
+          <div>
+            <div class="text-sm font-semibold text-gray-800">Minh Khoa</div>
+            <div class="text-xs text-gray-400">Marketing Manager</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== COURSE DETAIL MODAL ===== -->
+<div id="detail-modal" class="fixed inset-0 z-50 hidden items-center justify-center modal-backdrop bg-black/70 p-4 overflow-y-auto">
+  <div class="bg-white rounded-3xl shadow-2xl w-full max-w-5xl mx-auto my-8 overflow-hidden animate-slide-up">
+    <!-- Header with Image -->
+    <div class="relative h-72 overflow-hidden">
+      <img id="detail-image" src="" alt="Course" class="w-full h-full object-cover" />
+      <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
+      <button onclick="closeDetailModal()" class="absolute top-4 right-4 w-12 h-12 bg-white/90 hover:bg-white rounded-full flex items-center justify-center text-gray-600 hover:text-gray-900 text-3xl shadow-xl transition-all hover:scale-110">
+        &times;
+      </button>
+      <div class="absolute bottom-6 left-6 right-6">
+        <span id="detail-badge" class="inline-block text-xs font-bold px-3 py-1.5 rounded-full mb-3"></span>
+        <h2 id="detail-title" class="text-3xl md:text-4xl font-extrabold text-white mb-2 drop-shadow-lg"></h2>
+        <div class="flex items-center gap-6 text-sm text-white/90">
+          <div class="flex items-center gap-2">
+            <span>📚</span>
+            <span><span id="detail-lessons"></span> chương</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span>☁️</span>
+            <span>Google Drive</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span>⏱️</span>
+            <span>Truy cập trọn đời</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-8 space-y-8">
+      <!-- Description -->
+      <div>
+        <h3 class="text-xl font-bold text-gray-900 mb-3 flex items-center gap-2">
+          <span class="text-2xl">📝</span>
+          Giới thiệu khóa học
+        </h3>
+        <p id="detail-desc" class="text-gray-600 leading-relaxed text-base"></p>
+      </div>
+
+      <!-- Video Demo Section -->
+      <div id="video-section" class="hidden">
+        <h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-3 sm:mb-4 flex items-center gap-2">
+          <span class="text-xl sm:text-2xl">🎬</span>
+          <span class="text-base sm:text-xl">Video học thử miễn phí</span>
+        </h3>
+        <div class="aspect-video bg-gray-900 rounded-xl sm:rounded-2xl overflow-hidden shadow-xl sm:shadow-2xl border-2 sm:border-4 border-primary-100">
+          <iframe id="detail-video" class="w-full h-full" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+        <p class="text-xs sm:text-sm text-gray-500 mt-2 sm:mt-3 text-center px-2">💡 Xem video học thử để hiểu rõ hơn về nội dung và chất lượng khóa học</p>
+      </div>
+
+      <!-- Chapters Section -->
+      <div id="chapters-section" class="hidden">
+        <h3 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+          <span class="text-2xl">📖</span>
+          Nội dung chi tiết khóa học
+        </h3>
+        <div class="bg-gradient-to-br from-primary-50 to-purple-50 rounded-2xl p-6">
+          <div id="detail-chapters" class="space-y-3 max-h-96 overflow-y-auto pr-2"></div>
+        </div>
+      </div>
+
+      <!-- Price & CTA -->
+      <div class="border-t-2 border-gray-100 pt-6">
+        <div class="bg-gradient-to-r from-primary-600 to-purple-600 rounded-2xl p-6 flex flex-col md:flex-row items-center justify-between gap-4 shadow-xl">
+          <div class="text-center md:text-left">
+            <p class="text-white/80 text-sm mb-1">Giá khóa học</p>
+            <div class="flex items-center gap-3">
+              <span id="detail-original-price" class="line-through text-white/60 text-lg"></span>
+              <span id="detail-sale-price" class="text-4xl font-extrabold text-yellow-300"></span>
+            </div>
+            <p class="text-white/70 text-xs mt-2">💰 Giá siêu rẻ - Học qua Google Drive</p>
+          </div>
+          <button onclick="addToCartFromDetail()" class="bg-white hover:bg-yellow-300 text-primary-700 font-bold px-10 py-4 rounded-xl transition-all shadow-lg hover:shadow-2xl transform hover:scale-105 text-lg whitespace-nowrap">
+            🛒 Thêm vào giỏ hàng
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== COURSE PREVIEW SCREEN (Full Page) ===== -->
+<div id="preview-screen" class="hidden fixed inset-0 z-50 bg-gray-50 overflow-y-auto">
+  <!-- Header -->
+  <header class="sticky top-0 z-40 bg-white border-b border-gray-200 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <div class="w-10 h-10 bg-gradient-to-br from-primary-600 to-purple-600 rounded-xl flex items-center justify-center">
+          <span class="text-white font-bold text-lg">🛒</span>
+        </div>
+        <div>
+          <span class="text-xl font-extrabold bg-gradient-to-r from-primary-600 to-purple-600 bg-clip-text text-transparent">Tạp Hóa Kiến Thức</span>
+          <p class="text-[10px] text-gray-500 -mt-0.5">Học thử miễn phí</p>
+        </div>
+      </div>
+      <button onclick="closePreview()" class="text-sm font-medium text-gray-600 hover:text-primary-600 transition-colors px-4 py-2 rounded-lg hover:bg-primary-50 flex items-center gap-2">
+        <span>←</span> Quay lại
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      
+      <!-- Left: Video & Info -->
+      <div class="lg:col-span-2 space-y-6">
+        <!-- Course Header -->
+        <div class="bg-white rounded-2xl p-6 shadow-md border border-gray-100">
+          <div class="flex items-start justify-between mb-4">
+            <div class="flex-1">
+              <span id="preview-badge" class="inline-block text-xs font-bold px-3 py-1.5 rounded-full mb-3"></span>
+              <h1 id="preview-title" class="text-3xl font-extrabold text-gray-900 mb-2"></h1>
+              <p id="preview-desc" class="text-gray-600 leading-relaxed"></p>
+            </div>
+          </div>
+          
+          <div class="flex items-center gap-6 text-sm text-gray-500 pt-4 border-t border-gray-100">
+            <div class="flex items-center gap-2">
+              <span>📚</span>
+              <span><span id="preview-lessons"></span> chương</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span>☁️</span>
+              <span>Google Drive</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span>⏱️</span>
+              <span>Truy cập trọn đời</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Video Player -->
+        <div class="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-md border border-gray-100">
+          <div class="flex items-center gap-2 mb-3 sm:mb-4">
+            <span class="text-xl sm:text-2xl">🎬</span>
+            <h2 class="text-base sm:text-xl font-bold text-gray-900">Video học thử miễn phí</h2>
+          </div>
+          <div class="aspect-video bg-gray-900 rounded-lg sm:rounded-xl overflow-hidden shadow-lg">
+            <iframe id="preview-video" class="w-full h-full" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          </div>
+          <div class="mt-3 sm:mt-4 bg-yellow-50 border border-yellow-200 rounded-lg sm:rounded-xl p-3 sm:p-4 flex items-start gap-2 sm:gap-3">
+            <span class="text-xl sm:text-2xl flex-shrink-0">💡</span>
+            <p class="text-xs sm:text-sm text-gray-700 leading-relaxed">
+              <strong>Xem video học thử</strong> để hiểu rõ hơn về nội dung và chất lượng khóa học. Đây chỉ là 1 phần nhỏ trong khóa học đầy đủ!
+            </p>
+          </div>
+        </div>
+
+        <!-- Course Description -->
+        <div class="bg-white rounded-2xl p-6 shadow-md border border-gray-100">
+          <div class="flex items-center gap-2 mb-4">
+            <span class="text-2xl">📝</span>
+            <h2 class="text-xl font-bold text-gray-900">Bạn sẽ học được gì?</h2>
+          </div>
+          <ul class="space-y-3">
+            <li class="flex items-start gap-3">
+              <span class="text-green-500 text-xl flex-shrink-0">✓</span>
+              <span class="text-gray-700">Làm chủ công cụ AI để tạo video tự động, tiết kiệm thời gian</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="text-green-500 text-xl flex-shrink-0">✓</span>
+              <span class="text-gray-700">Xây dựng kênh TikTok, Fanpage bán hàng hiệu quả</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="text-green-500 text-xl flex-shrink-0">✓</span>
+              <span class="text-gray-700">Kiếm tiền từ Affiliate Shopee, TikTok Shop một cách bài bản</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="text-green-500 text-xl flex-shrink-0">✓</span>
+              <span class="text-gray-700">Tự động hóa quy trình làm việc, tăng thu nhập thụ động</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Right: Chapters & CTA -->
+      <div class="space-y-6">
+        <!-- Chapters List -->
+        <div class="bg-white rounded-2xl p-6 shadow-md border border-gray-100 lg:sticky lg:top-24">
+          <div class="flex items-center gap-2 mb-4">
+            <span class="text-2xl">📖</span>
+            <h2 class="text-lg font-bold text-gray-900">Nội dung chi tiết</h2>
+          </div>
+          <div id="preview-chapters" class="space-y-2 max-h-96 overflow-y-auto pr-2"></div>
+        </div>
+
+        <!-- Price & CTA -->
+        <div class="bg-gradient-to-br from-primary-600 to-purple-600 rounded-2xl p-6 shadow-xl lg:sticky lg:top-[540px]">
+          <div class="text-center mb-4">
+            <p class="text-white/80 text-sm mb-2">Giá khóa học</p>
+            <div class="flex items-center justify-center gap-3 mb-2">
+              <span id="preview-price-original" class="line-through text-white/60 text-lg"></span>
+              <span id="preview-price-sale" class="text-4xl font-extrabold text-yellow-300"></span>
+            </div>
+            <p class="text-white/70 text-xs">💰 Giá siêu rẻ - Học qua Google Drive</p>
+          </div>
+          
+          <button onclick="addToCartFromPreview()" class="w-full bg-white hover:bg-yellow-300 text-primary-700 font-bold py-4 rounded-xl transition-all shadow-lg hover:shadow-2xl transform hover:scale-105 text-base mb-3">
+            🛒 Thêm vào giỏ hàng
+          </button>
+          
+          <button onclick="closePreview()" class="w-full text-center bg-white/10 hover:bg-white/20 text-white font-medium py-3 rounded-xl transition-all text-sm border border-white/30">
+            Xem thêm khóa học khác
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- ===== FOOTER ===== -->
+<footer class="bg-gray-900 text-gray-400 py-12 px-4 sm:px-6">
+  <div class="max-w-6xl mx-auto text-center">
+    <div class="text-white font-bold text-xl mb-3">🛒 Tạp Hóa Kiến Thức</div>
+    <p class="text-sm mb-6">Đầu tư vào bản thân là đầu tư sinh lời nhất. Học thực chiến, làm được ngay!</p>
+    <div class="flex justify-center gap-6 text-sm mb-6">
+      <a href="#" class="hover:text-white transition-colors">Điều khoản</a>
+      <a href="#" class="hover:text-white transition-colors">Chính sách</a>
+      <a href="#" class="hover:text-white transition-colors">Liên hệ</a>
+    </div>
+    <p class="text-xs text-gray-600">© 2026 Tạp Hóa Kiến Thức. All rights reserved.</p>
+  </div>
+</footer>
+
+<!-- ===== CART MODAL ===== -->
+<div id="cart-modal" class="fixed inset-0 z-50 hidden items-center justify-end modal-backdrop bg-black/50">
+  <div class="bg-white h-full w-full max-w-md shadow-2xl flex flex-col animate-slide-up">
+    <div class="bg-primary-600 px-6 py-4 flex items-center justify-between">
+      <h3 class="text-white font-bold text-lg">🛒 Giỏ hàng của bạn</h3>
+      <button onclick="toggleCart()" class="text-white/80 hover:text-white text-2xl">&times;</button>
+    </div>
+    
+    <div id="cart-empty" class="flex-1 flex flex-col items-center justify-center p-6 hidden">
+      <span class="text-6xl mb-4">🛒</span>
+      <p class="text-gray-500 text-center">Giỏ hàng trống<br/>Hãy thêm khóa học yêu thích!</p>
+      <button onclick="toggleCart()" class="mt-6 bg-primary-600 text-white px-6 py-2 rounded-xl hover:bg-primary-700 transition">Tiếp tục mua sắm</button>
+    </div>
+    
+    <div id="cart-content" class="flex-1 flex flex-col">
+      <div id="cart-items" class="flex-1 overflow-y-auto p-4 space-y-3"></div>
+      
+      <div class="border-t border-gray-200 p-4 space-y-3">
+        <div class="flex justify-between items-center">
+          <span class="text-gray-600 font-medium">Tổng cộng:</span>
+          <span id="cart-total" class="text-2xl font-extrabold text-primary-600">0đ</span>
+        </div>
+        <button onclick="proceedToCheckout()" class="w-full bg-primary-600 hover:bg-primary-700 text-white font-bold py-4 rounded-xl transition shadow-lg">
+          Thanh toán ngay
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== CHECKOUT MODAL ===== -->
+<div id="checkout-modal" class="fixed inset-0 z-50 hidden items-center justify-center modal-backdrop bg-black/50 p-3 sm:p-4 overflow-y-auto">
+  <div class="bg-white rounded-xl sm:rounded-2xl shadow-2xl w-full max-w-lg mx-auto my-4 sm:my-8 overflow-hidden animate-slide-up max-h-[95vh] flex flex-col">
+    <div class="bg-gradient-to-r from-primary-600 to-purple-600 px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between flex-shrink-0">
+      <div>
+        <h3 class="text-white font-bold text-base sm:text-lg">Thanh toán đơn hàng</h3>
+        <p class="text-white/80 text-xs sm:text-sm mt-0.5">Điền thông tin để hoàn tất</p>
+      </div>
+      <button onclick="closeCheckoutModal()" class="text-white/70 hover:text-white text-2xl sm:text-3xl leading-none w-8 h-8 flex items-center justify-center">&times;</button>
+    </div>
+
+    <div class="p-4 sm:p-6 space-y-4 sm:space-y-5 overflow-y-auto flex-1">
+      <div class="bg-primary-50 rounded-lg sm:rounded-xl p-3 sm:p-4 flex-shrink-0">
+        <div class="flex justify-between items-center mb-2">
+          <span class="text-xs sm:text-sm font-medium text-gray-600">Tổng thanh toán</span>
+          <span id="checkout-total" class="text-xl sm:text-2xl font-extrabold text-primary-600">0đ</span>
+        </div>
+        <div id="checkout-items-summary" class="space-y-1 text-xs text-gray-500 border-t border-primary-100 pt-2 mt-2 max-h-24 overflow-y-auto"></div>
+      </div>
+
+      <div class="space-y-3 sm:space-y-4">
+        <div>
+          <label class="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5">Email <span class="text-red-500">*</span></label>
+          <input id="input-email" type="email" placeholder="email@example.com"
+            class="w-full border border-gray-200 rounded-lg sm:rounded-xl px-3 sm:px-4 py-2.5 sm:py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary-400 transition" />
+          <p id="email-error" class="hidden text-red-500 text-xs mt-1.5">Vui lòng nhập email hợp lệ.</p>
+        </div>
+        <div>
+          <label class="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5">Số điện thoại</label>
+          <input id="input-phone" type="tel" placeholder="0901 234 567"
+            class="w-full border border-gray-200 rounded-lg sm:rounded-xl px-3 sm:px-4 py-2.5 sm:py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary-400 transition" />
+        </div>
+      </div>
+
+      <div class="border-2 border-dashed border-primary-200 rounded-lg sm:rounded-xl p-3 sm:p-5 text-center bg-primary-50/50">
+        <p class="text-[10px] sm:text-xs font-bold text-primary-600 uppercase tracking-wider mb-2 sm:mb-3">Scan QR to Pay</p>
+        <img
+          id="qr-code-image"
+          src="https://img.vietqr.io/image/VCB-1020058102-compact2.png?amount=0&addInfo=TAPHOA"
+          alt="QR thanh toán"
+          class="w-36 h-36 sm:w-48 sm:h-48 mx-auto rounded-lg sm:rounded-xl border-2 sm:border-4 border-white shadow-lg"
+        />
+        <div class="mt-3 sm:mt-4 space-y-1 sm:space-y-1.5 text-left bg-white rounded-lg p-2.5 sm:p-3 border border-primary-100">
+          <p class="text-[10px] sm:text-xs text-gray-500">Bank: <span class="font-semibold text-gray-800">Vietcombank</span></p>
+          <p class="text-[10px] sm:text-xs text-gray-500">STK: <span class="font-semibold text-gray-800">1020058102</span></p>
+          <p class="text-[10px] sm:text-xs text-gray-500">Account holder: <span class="font-semibold text-gray-800">Hoang Quoc Phong</span></p>
+          <p class="text-[10px] sm:text-xs text-primary-600 font-semibold mt-1.5 sm:mt-2 pt-1.5 sm:pt-2 border-t border-primary-100">Nội dung CK: <span id="transfer-content">[Email]</span></p>
+        </div>
+      </div>
+
+      <button onclick="confirmPayment()"
+        class="w-full bg-gradient-to-r from-primary-600 to-purple-600 hover:from-primary-700 hover:to-purple-700 text-white font-bold py-3 sm:py-4 rounded-lg sm:rounded-xl transition shadow-lg hover:shadow-xl transform hover:scale-[1.02] text-sm sm:text-base">
+        ✓ Xác nhận đơn hàng
+      </button>
+
+      <button onclick="closeCheckoutModal()"
+        class="w-full border border-gray-200 text-gray-500 font-medium py-2.5 sm:py-3 rounded-lg sm:rounded-xl hover:bg-gray-50 transition text-xs sm:text-sm">
+        Hủy
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== FIXED CONTACT BUTTONS ===== -->
+<div class="contact-buttons">
+  <a href="https://t.me/phong_hq" target="_blank" rel="noopener noreferrer" class="contact-btn" style="background: linear-gradient(135deg, #0088cc 0%, #00a0e9 100%);" title="Chat với chúng tôi qua Telegram" aria-label="Liên hệ Telegram">
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="white">
+      <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.161c-.18.717-1.969 9.27-2.781 12.293-.344 1.28-.766 1.71-1.257 1.751-.535.049-1.061-.354-1.646-.693-2.003-1.162-3.135-1.885-5.082-3.018-2.252-1.31-.792-2.03.491-3.206.336-.308 6.177-5.66 6.288-6.142.014-.06.027-.285-.106-.404-.133-.119-.329-.078-.47-.046-.2.046-3.39 2.154-9.571 6.326-.906.622-1.727.925-2.463.91-.811-.017-2.37-.458-3.529-.835-1.42-.462-2.548-.706-2.45-1.49.051-.408.607-.825 1.668-1.25 6.537-2.847 10.895-4.725 13.073-5.634 6.226-2.589 7.518-3.04 8.363-3.055.185-.003.599.043.867.262.226.185.288.435.318.611.03.176.067.577.037.89z"/>
+    </svg>
+  </a>
+  
+  <a href="https://zalo.me/0327728248" target="_blank" rel="noopener noreferrer" class="contact-btn" style="background: linear-gradient(135deg, #0068ff 0%, #0180ff 100%);" title="Chat với chúng tôi qua Zalo" aria-label="Liên hệ Zalo">
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 48 48" fill="white">
+      <path d="M24 4C12.95 4 4 12.95 4 24c0 8.9 5.83 16.43 13.88 19.02l.35.09v-6.43c-4.45-1.38-7.73-5.47-7.73-10.28 0-5.97 4.85-10.82 10.82-10.82h.01c5.97 0 10.82 4.85 10.82 10.82 0 4.81-3.28 8.9-7.73 10.28v6.43l.35-.09C38.17 40.43 44 32.9 44 24c0-11.05-8.95-20-20-20zm-3.5 24.5h-3v-9h3v9zm5 0h-3v-9h3v9zm5 0h-3v-9h3v9z"/>
+    </svg>
+  </a>
+</div>
+
+</body>
+</html>
