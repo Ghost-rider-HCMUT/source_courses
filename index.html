@@ -30,12 +30,15 @@
   </script>
   <style>
     html { scroll-behavior: smooth; }
+    body { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); background-attachment: fixed; }
     .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
     .card-hover { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-    .card-hover:hover { transform: translateY(-8px) scale(1.02); box-shadow: 0 20px 40px rgba(99,102,241,0.2); }
+    .card-hover:hover { transform: translateY(-8px) scale(1.02); box-shadow: 0 20px 40px rgba(99,102,241,0.3); }
     .badge-glow { box-shadow: 0 0 20px rgba(251, 191, 36, 0.5); }
     .cart-badge { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
     .modal-backdrop { backdrop-filter: blur(8px); }
+    .cta-pulse { animation: pulse-cta 2s ease-in-out infinite; }
+    @keyframes pulse-cta { 0%, 100% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.7); } 50% { box-shadow: 0 0 0 10px rgba(251, 191, 36, 0); } }
     @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
     .float-animation { animation: float 3s ease-in-out infinite; }
     
@@ -83,19 +86,35 @@
       animation: pulse-ring 2s ease-in-out infinite;
       z-index: -1;
     }
+    
+    /* Sticky CTA */
+    .sticky-cta {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 45;
+      background: linear-gradient(to top, rgba(0,0,0,0.9), rgba(0,0,0,0.7));
+      backdrop-filter: blur(10px);
+      padding: 12px 16px;
+      transform: translateY(100%);
+      transition: transform 0.3s ease;
+    }
+    .sticky-cta.show { transform: translateY(0); }
+    @media (min-width: 768px) { .sticky-cta { display: none; } }
   </style>
 </head>
 <body class="bg-gray-50 text-gray-800 font-sans">
 
 <!-- ===== STICKY HEADER ===== -->
-<header class="sticky top-0 z-50 bg-white/95 backdrop-blur-md shadow-sm">
+<header id="main-header" class="sticky top-0 z-50 bg-white/95 backdrop-blur-md shadow-sm transition-all duration-300">
   <div class="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 py-3 sm:py-4 flex items-center justify-between gap-2">
     <a href="#" class="flex items-center gap-2 sm:gap-3 group min-w-0 flex-shrink">
       <div class="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-primary-600 via-purple-600 to-pink-500 rounded-xl sm:rounded-2xl flex items-center justify-center transform group-hover:rotate-6 transition-all duration-300 shadow-lg flex-shrink-0">
         <span class="text-white font-bold text-lg sm:text-xl">🛒</span>
       </div>
       <div class="min-w-0">
-        <span class="text-base sm:text-xl lg:text-2xl font-extrabold bg-gradient-to-r from-primary-600 via-purple-600 to-pink-500 bg-clip-text text-transparent tracking-tight block truncate">Tạp Hóa Kiến Thức</span>
+        <span class="text-base sm:text-xl lg:text-2xl font-extrabold bg-gradient-to-r from-primary-600 via-purple-600 to-pink-500 bg-clip-text text-transparent tracking-tight block truncate">Tạp Hóa Tri Thức</span>
         <p class="text-[9px] sm:text-[10px] lg:text-[11px] text-gray-500 -mt-0.5 font-medium hidden xs:block">Học thực chiến • Giá sinh viên</p>
       </div>
     </a>
@@ -151,11 +170,11 @@
 </section>
 
 <!-- ===== CATEGORIES SECTION ===== -->
-<section id="categories" class="py-16 px-4 sm:px-6 bg-gradient-to-b from-white to-primary-50">
+<section id="categories" class="py-16 px-4 sm:px-6 bg-gradient-to-b from-purple-900/20 to-indigo-900/20">
   <div class="max-w-7xl mx-auto">
     <div class="text-center mb-12">
-      <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900 mb-3">Danh mục khóa học</h2>
-      <p class="text-gray-600 text-base max-w-2xl mx-auto">Chọn lĩnh vực bạn muốn chinh phục. Mỗi khóa học đều có lộ trình rõ ràng.</p>
+      <h2 class="text-3xl md:text-4xl font-extrabold text-white mb-3">Danh mục khóa học</h2>
+      <p class="text-gray-200 text-base max-w-2xl mx-auto">Chọn lĩnh vực bạn muốn chinh phục. Mỗi khóa học đều có lộ trình rõ ràng.</p>
     </div>
     
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -210,21 +229,21 @@
   // ===== COURSE DATA =====
   const courses = [
     // AI Courses
-    { id: 1, title: 'AI & Machine Learning Toàn Tập', category: 'ai', desc: 'Từ cơ bản đến nâng cao: Python, TensorFlow, PyTorch. Xây dựng mô hình AI thực tế.', image: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=400&h=240&fit=crop', originalPrice: 150000, salePrice: 89000, badge: '🔥 Hot nhất', badgeColor: 'bg-red-100 text-red-600', lessons: 58, soldOut: true },
-    { id: 2, title: 'ChatGPT & Prompt Engineering', category: 'ai', desc: 'Làm chủ ChatGPT, viết prompt chuyên nghiệp, tự động hóa công việc với AI.', image: 'https://images.unsplash.com/photo-1676277791608-ac5c4c6c2e8a?w=400&h=240&fit=crop', originalPrice: 120000, salePrice: 69000, badge: '⚡ Mới nhất', badgeColor: 'bg-blue-100 text-blue-600', lessons: 32, soldOut: true },
+    { id: 1, title: 'AI & Machine Learning Toàn Tập', category: 'ai', desc: 'Từ cơ bản đến nâng cao: Python, TensorFlow, PyTorch. Xây dựng mô hình AI thực tế.', image: 'https://images.pexels.com/photos/8386440/pexels-photo-8386440.jpeg?auto=compress&cs=tinysrgb&w=400&h=240', originalPrice: 150000, salePrice: 89000, badge: '🔥 Hot nhất', badgeColor: 'bg-red-100 text-red-600', lessons: 58, soldOut: true },
+    { id: 2, title: 'ChatGPT & Prompt Engineering', category: 'ai', desc: 'Làm chủ ChatGPT, viết prompt chuyên nghiệp, tự động hóa công việc với AI.', image: 'https://images.pexels.com/photos/8438918/pexels-photo-8438918.jpeg?auto=compress&cs=tinysrgb&w=400&h=240', originalPrice: 120000, salePrice: 69000, badge: '⚡ Mới nhất', badgeColor: 'bg-blue-100 text-blue-600', lessons: 32, soldOut: true },
     
     // Design Courses
-    { id: 3, title: 'Photoshop từ Zero đến Hero', category: 'design', desc: 'Chỉnh sửa ảnh chuyên nghiệp, thiết kế poster, banner, thumbnail bắt mắt.', image: 'https://images.unsplash.com/photo-1626785774573-4b799315345d?w=400&h=240&fit=crop', originalPrice: 130000, salePrice: 79000, badge: '💎 Bán chạy', badgeColor: 'bg-purple-100 text-purple-600', lessons: 45, soldOut: true },
-    { id: 4, title: 'UI/UX Design với Figma', category: 'design', desc: 'Thiết kế giao diện app, website đẹp mắt, chuẩn UX. Portfolio ấn tượng.', image: 'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=400&h=240&fit=crop', originalPrice: 140000, salePrice: 89000, badge: '🎨 Chuyên sâu', badgeColor: 'bg-pink-100 text-pink-600', lessons: 52, soldOut: true },
+    { id: 3, title: 'Photoshop từ Zero đến Hero', category: 'design', desc: 'Chỉnh sửa ảnh chuyên nghiệp, thiết kế poster, banner, thumbnail bắt mắt.', image: 'https://images.pexels.com/photos/196644/pexels-photo-196644.jpeg?auto=compress&cs=tinysrgb&w=400&h=240', originalPrice: 130000, salePrice: 79000, badge: '💎 Bán chạy', badgeColor: 'bg-purple-100 text-purple-600', lessons: 45, soldOut: true },
+    { id: 4, title: 'UI/UX Design với Figma', category: 'design', desc: 'Thiết kế giao diện app, website đẹp mắt, chuẩn UX. Portfolio ấn tượng.', image: 'https://images.pexels.com/photos/326503/pexels-photo-326503.jpeg?auto=compress&cs=tinysrgb&w=400&h=240', originalPrice: 140000, salePrice: 89000, badge: '🎨 Chuyên sâu', badgeColor: 'bg-pink-100 text-pink-600', lessons: 52, soldOut: true },
     
     // Marketing Courses
-    { id: 5, title: 'Video AI & Affiliate Marketing 2026', category: 'marketing', desc: 'Làm Affiliate bằng Video AI trên TikTok, Shopee. Xây kênh, bán hàng, kiếm tiền tự động.', image: 'https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?w=400&h=240&fit=crop', originalPrice: 150000, salePrice: 79000, badge: '🤖 AI + Affiliate', badgeColor: 'bg-indigo-100 text-indigo-600', lessons: 7, videoDemo: 'https://drive.google.com/file/d/1FicVJaxHaTSmKPzTqKA0Nlxpe4LY-RYW/preview', chapters: ['Chương 1: Tổng quan về Video AI & Affiliate', 'Chương 2: Làm Affiliate Shopee Bằng Video AI', 'Chương 3: Xây Fanpage Bán Hàng & Affiliate Shopee', 'Chương 4: Xây Kênh, Bán Hàng Và Làm Affiliate Bằng Video AI Trên TikTok', 'Chương 5: Phương Pháp Làm AI Mới 2026 – Luồng Làm Việc Tự Động', 'Chương 6: Hướng Dẫn Chi Tiết Cách Làm Video AI', 'Chương 7: Các Buổi Zoom Kiến Thức Thực Chiến'], soldOut: false },
-    { id: 6, title: 'Facebook Ads Thực Chiến', category: 'marketing', desc: 'Chạy quảng cáo Facebook hiệu quả, tối ưu chi phí, tăng doanh số x10.', image: 'https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=400&h=240&fit=crop', originalPrice: 110000, salePrice: 59000, badge: '📊 ROI cao', badgeColor: 'bg-orange-100 text-orange-600', lessons: 38, soldOut: true },
-    { id: 7, title: 'SEO & Content Marketing', category: 'marketing', desc: 'Đưa website lên top Google, viết content thu hút, tăng traffic tự nhiên.', image: 'https://images.unsplash.com/photo-1562577309-4932fdd64cd1?w=400&h=240&fit=crop', originalPrice: 120000, salePrice: 69000, badge: '🚀 Hiệu quả', badgeColor: 'bg-green-100 text-green-600', lessons: 42, soldOut: true },
+    { id: 5, title: 'Video AI & Affiliate Marketing 2026', category: 'marketing', desc: 'Làm Affiliate bằng Video AI trên TikTok, Shopee. Xây kênh, bán hàng, kiếm tiền tự động.', image: 'https://images.pexels.com/photos/5082579/pexels-photo-5082579.jpeg?auto=compress&cs=tinysrgb&w=400&h=240', originalPrice: 150000, salePrice: 79000, badge: '🤖 AI + Affiliate', badgeColor: 'bg-indigo-100 text-indigo-600', lessons: 7, videoDemo: 'https://drive.google.com/file/d/1FicVJaxHaTSmKPzTqKA0Nlxpe4LY-RYW/preview', chapters: ['Chương 1: Tổng quan về Video AI & Affiliate', 'Chương 2: Làm Affiliate Shopee Bằng Video AI', 'Chương 3: Xây Fanpage Bán Hàng & Affiliate Shopee', 'Chương 4: Xây Kênh, Bán Hàng Và Làm Affiliate Bằng Video AI Trên TikTok', 'Chương 5: Phương Pháp Làm AI Mới 2026 – Luồng Làm Việc Tự Động', 'Chương 6: Hướng Dẫn Chi Tiết Cách Làm Video AI', 'Chương 7: Các Buổi Zoom Kiến Thức Thực Chiến'], soldOut: false },
+    { id: 6, title: 'Facebook Ads Thực Chiến', category: 'marketing', desc: 'Chạy quảng cáo Facebook hiệu quả, tối ưu chi phí, tăng doanh số x10.', image: 'https://images.pexels.com/photos/267350/pexels-photo-267350.jpeg?auto=compress&cs=tinysrgb&w=400&h=240', originalPrice: 110000, salePrice: 59000, badge: '📊 ROI cao', badgeColor: 'bg-orange-100 text-orange-600', lessons: 38, soldOut: true },
+    { id: 7, title: 'SEO & Content Marketing', category: 'marketing', desc: 'Đưa website lên top Google, viết content thu hút, tăng traffic tự nhiên.', image: 'https://images.pexels.com/photos/270637/pexels-photo-270637.jpeg?auto=compress&cs=tinysrgb&w=400&h=240', originalPrice: 120000, salePrice: 69000, badge: '🚀 Hiệu quả', badgeColor: 'bg-green-100 text-green-600', lessons: 42, soldOut: true },
     
     // Office Courses
-    { id: 8, title: 'Excel Nâng Cao cho Dân Văn Phòng', category: 'office', desc: 'Pivot Table, VBA, Dashboard, phân tích dữ liệu chuyên nghiệp.', image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=240&fit=crop', originalPrice: 100000, salePrice: 49000, badge: '💼 Thiết thực', badgeColor: 'bg-teal-100 text-teal-600', lessons: 35, soldOut: true },
-    { id: 9, title: 'Google Workspace Toàn Diện', category: 'office', desc: 'Gmail, Drive, Sheets, Docs, Meet. Làm việc nhóm hiệu quả trên cloud.', image: 'https://images.unsplash.com/photo-1573164713714-d95e436ab8d6?w=400&h=240&fit=crop', originalPrice: 90000, salePrice: 49000, badge: '☁️ Cloud', badgeColor: 'bg-sky-100 text-sky-600', lessons: 28, soldOut: true }
+    { id: 8, title: 'Excel Nâng Cao cho Dân Văn Phòng', category: 'office', desc: 'Pivot Table, VBA, Dashboard, phân tích dữ liệu chuyên nghiệp.', image: 'https://images.pexels.com/photos/590022/pexels-photo-590022.jpeg?auto=compress&cs=tinysrgb&w=400&h=240', originalPrice: 100000, salePrice: 49000, badge: '💼 Thiết thực', badgeColor: 'bg-teal-100 text-teal-600', lessons: 35, soldOut: true },
+    { id: 9, title: 'Google Workspace Toàn Diện', category: 'office', desc: 'Gmail, Drive, Sheets, Docs, Meet. Làm việc nhóm hiệu quả trên cloud.', image: 'https://images.pexels.com/photos/4050315/pexels-photo-4050315.jpeg?auto=compress&cs=tinysrgb&w=400&h=240', originalPrice: 90000, salePrice: 49000, badge: '☁️ Cloud', badgeColor: 'bg-sky-100 text-sky-600', lessons: 28, soldOut: true }
   ];
 
   // ===== CART STATE =====
@@ -253,6 +272,23 @@
         }
       });
     }
+    
+    // Sticky CTA on scroll
+    let lastScroll = 0;
+    window.addEventListener('scroll', function() {
+      const currentScroll = window.pageYOffset;
+      const stickyCta = document.getElementById('sticky-cta');
+      
+      if (currentScroll > 500 && currentScroll > lastScroll) {
+        // Scrolling down & past hero
+        stickyCta.classList.add('show');
+      } else if (currentScroll < lastScroll) {
+        // Scrolling up
+        stickyCta.classList.remove('show');
+      }
+      
+      lastScroll = currentScroll;
+    });
   });
   function loadCartFromStorage() {
     const stored = localStorage.getItem('cart');
@@ -278,12 +314,12 @@
     if (!grid) return;
     
     grid.innerHTML = filtered.map(c => `
-      <div class="bg-white rounded-2xl overflow-hidden shadow-md border border-gray-100 card-hover flex flex-col ${c.soldOut ? 'opacity-60' : ''}">
+      <div class="bg-white rounded-2xl overflow-hidden shadow-md border border-gray-100 card-hover flex flex-col ${c.soldOut ? 'opacity-70' : ''}">
         <div class="relative overflow-hidden group ${c.soldOut ? '' : 'cursor-pointer'}" onclick="${c.soldOut ? '' : `viewCourseDetail(${c.id})`}">
-          <img src="${c.image}" alt="${c.title}" class="w-full h-52 object-cover ${c.soldOut ? '' : 'group-hover:scale-110 transition-transform duration-500'}" />
+          <img src="${c.image}" alt="${c.title}" class="w-full h-52 object-cover ${c.soldOut ? '' : 'group-hover:scale-110 transition-transform duration-500'}" loading="lazy" />
           ${c.soldOut 
-            ? '<div class="absolute inset-0 bg-black/50 flex items-center justify-center"><span class="bg-gray-800 text-white px-4 py-2 rounded-full text-sm font-bold">⏳ Đang cập nhật</span></div>'
-            : `<span class="absolute top-3 left-3 text-xs font-bold px-3 py-1.5 rounded-full ${c.badgeColor} backdrop-blur-sm">${c.badge}</span>
+            ? `<span class="absolute top-3 left-3 text-xs font-bold px-3 py-1.5 rounded-full bg-white/90 text-gray-700 backdrop-blur-sm shadow-md">⏳ Sắp ra mắt</span>`
+            : `<span class="absolute top-3 left-3 text-xs font-bold px-3 py-1.5 rounded-full ${c.badgeColor} backdrop-blur-sm shadow-md">${c.badge}</span>
                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
                  <span class="text-white font-semibold text-sm bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full">👁️ Xem chi tiết</span>
                </div>`
@@ -297,14 +333,14 @@
             <span>•</span>
             <span>☁️ Google Drive</span>
           </div>
-          <div class="mt-4 flex items-end justify-between">
-            <div>
-              <span class="line-through text-gray-400 text-xs">${formatPrice(c.originalPrice)}</span>
-              <div class="text-primary-600 font-extrabold text-xl">${formatPrice(c.salePrice)}</div>
+          <div class="mt-4 flex items-end justify-between gap-3">
+            <div class="flex-shrink-0">
+              <span class="line-through text-gray-400 text-xs block">${formatPrice(c.originalPrice)}</span>
+              <div class="text-primary-600 font-extrabold text-lg sm:text-xl">${formatPrice(c.salePrice)}</div>
             </div>
             ${c.soldOut 
-              ? '<button disabled class="bg-gray-300 text-gray-500 text-sm font-semibold px-5 py-2.5 rounded-xl cursor-not-allowed">Đang cập nhật</button>'
-              : `<button onclick="addToCart(${c.id})" class="bg-primary-600 hover:bg-primary-700 text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition-all shadow-md hover:shadow-lg transform hover:scale-105">Thêm vào giỏ</button>`
+              ? '<div class="text-gray-500 text-xs font-medium">Sắp có</div>'
+              : `<button onclick="addToCart(${c.id})" class="bg-gradient-to-r from-yellow-400 to-orange-400 hover:from-yellow-500 hover:to-orange-500 text-gray-900 text-xs sm:text-sm font-bold px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg sm:rounded-xl transition-all shadow-lg hover:shadow-xl transform hover:scale-105 cta-pulse whitespace-nowrap flex-shrink-0">🛒 Mua ngay</button>`
             }
           </div>
         </div>
@@ -331,9 +367,9 @@
       const el = document.getElementById(`filter-${btn}`);
       if (el) {
         if (btn === cat) {
-          el.className = 'px-4 py-2 rounded-full text-sm font-medium bg-primary-600 text-white hover:bg-primary-700 transition';
+          el.className = 'px-4 py-2 rounded-full text-sm font-medium bg-yellow-400 text-gray-900 hover:bg-yellow-300 transition shadow-lg';
         } else {
-          el.className = 'px-4 py-2 rounded-full text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 transition';
+          el.className = 'px-4 py-2 rounded-full text-sm font-medium bg-white/20 text-white hover:bg-white/30 transition backdrop-blur-sm';
         }
       }
     });
@@ -464,6 +500,7 @@
     }
   }
 
+
   // ===== CART FUNCTIONS =====
   function addToCart(courseId) {
     const course = courses.find(c => c.id === courseId);
@@ -477,7 +514,9 @@
     
     updateCartCount();
     saveCartToStorage();
-    showNotification(`Đã thêm "${course.title}" vào giỏ hàng!`);
+    
+    // Mở modal thanh toán luôn thay vì chỉ thông báo
+    openCheckoutModal();
   }
 
   function removeFromCart(courseId) {
@@ -567,14 +606,35 @@
   }
 
   // ===== CHECKOUT MODAL =====
+  let isSubmitting = false; // Prevent double submit
+  
   function openCheckoutModal() {
     const modal = document.getElementById('checkout-modal');
     const total = calculateTotal();
     
+    // Nếu giỏ hàng trống, không mở modal
+    if (cart.length === 0) {
+      showNotification('Giỏ hàng trống! Vui lòng chọn khóa học.', 'info');
+      return;
+    }
+    
     document.getElementById('checkout-total').textContent = formatPrice(total);
-    document.getElementById('checkout-items-summary').innerHTML = cart.map(item => 
-      `<div class="flex justify-between text-sm"><span>${item.title} x${item.quantity}</span><span class="font-semibold">${formatPrice(item.salePrice * item.quantity)}</span></div>`
-    ).join('');
+    
+    // Render items with +/- buttons
+    document.getElementById('checkout-items-summary').innerHTML = cart.map(item => `
+      <div class="flex items-center justify-between gap-2 bg-white rounded-lg p-2">
+        <div class="flex-1 min-w-0">
+          <p class="text-xs font-medium text-gray-800 truncate">${item.title}</p>
+          <p class="text-xs text-gray-500">${formatPrice(item.salePrice)}</p>
+        </div>
+        <div class="flex items-center gap-2 flex-shrink-0">
+          <button onclick="updateQuantityInCheckout(${item.id}, -1)" class="w-6 h-6 bg-gray-100 hover:bg-gray-200 rounded flex items-center justify-center text-gray-700 font-bold text-sm">−</button>
+          <span class="text-sm font-semibold text-gray-900 w-6 text-center">${item.quantity}</span>
+          <button onclick="updateQuantityInCheckout(${item.id}, 1)" class="w-6 h-6 bg-gray-100 hover:bg-gray-200 rounded flex items-center justify-center text-gray-700 font-bold text-sm">+</button>
+        </div>
+        <span class="text-xs font-semibold text-gray-900 w-16 text-right">${formatPrice(item.salePrice * item.quantity)}</span>
+      </div>
+    `).join('');
     
     document.getElementById('input-email').value = '';
     document.getElementById('input-phone').value = '';
@@ -583,9 +643,62 @@
     // Reset QR code to default
     updateQRCode('');
     
+    // Reset submit flag
+    isSubmitting = false;
+    
     modal.classList.remove('hidden');
     modal.classList.add('flex');
     document.body.style.overflow = 'hidden';
+    
+    // Focus vào email input để khách hàng nhập ngay
+    setTimeout(() => {
+      document.getElementById('input-email').focus();
+    }, 300);
+  }
+  
+  function updateQuantityInCheckout(courseId, delta) {
+    const item = cart.find(c => c.id === courseId);
+    if (!item) return;
+    
+    item.quantity += delta;
+    
+    if (item.quantity <= 0) {
+      cart = cart.filter(c => c.id !== courseId);
+      
+      // Nếu giỏ hàng trống, đóng modal
+      if (cart.length === 0) {
+        closeCheckoutModal();
+        showNotification('Giỏ hàng trống!', 'info');
+        return;
+      }
+    }
+    
+    updateCartCount();
+    saveCartToStorage();
+    
+    // Re-render checkout modal
+    const total = calculateTotal();
+    document.getElementById('checkout-total').textContent = formatPrice(total);
+    document.getElementById('checkout-items-summary').innerHTML = cart.map(item => `
+      <div class="flex items-center justify-between gap-2 bg-white rounded-lg p-2">
+        <div class="flex-1 min-w-0">
+          <p class="text-xs font-medium text-gray-800 truncate">${item.title}</p>
+          <p class="text-xs text-gray-500">${formatPrice(item.salePrice)}</p>
+        </div>
+        <div class="flex items-center gap-2 flex-shrink-0">
+          <button onclick="updateQuantityInCheckout(${item.id}, -1)" class="w-6 h-6 bg-gray-100 hover:bg-gray-200 rounded flex items-center justify-center text-gray-700 font-bold text-sm">−</button>
+          <span class="text-sm font-semibold text-gray-900 w-6 text-center">${item.quantity}</span>
+          <button onclick="updateQuantityInCheckout(${item.id}, 1)" class="w-6 h-6 bg-gray-100 hover:bg-gray-200 rounded flex items-center justify-center text-gray-700 font-bold text-sm">+</button>
+        </div>
+        <span class="text-xs font-semibold text-gray-900 w-16 text-right">${formatPrice(item.salePrice * item.quantity)}</span>
+      </div>
+    `).join('');
+    
+    // Update QR code
+    const email = document.getElementById('input-email').value.trim();
+    if (email) {
+      updateQRCode(email);
+    }
   }
 
   function closeCheckoutModal() {
@@ -614,6 +727,9 @@
 
   // ===== CONFIRM PAYMENT =====
   async function confirmPayment() {
+    // Prevent double submit
+    if (isSubmitting) return;
+    
     const emailInput = document.getElementById('input-email');
     const email = emailInput.value.trim();
     const phone = document.getElementById('input-phone').value.trim();
@@ -630,6 +746,8 @@
       return;
     }
 
+    isSubmitting = true;
+
     // Build order data
     const orderData = {
       email: email,
@@ -645,18 +763,15 @@
     // Send to Google Apps Script
     if (GOOGLE_SCRIPT_URL) {
       try {
-        const response = await fetch(GOOGLE_SCRIPT_URL, {
+        await fetch(GOOGLE_SCRIPT_URL, {
           method: 'POST',
-          mode: 'no-cors', // Important for Google Apps Script
+          mode: 'no-cors',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(orderData)
         });
-        
-        // Note: no-cors mode doesn't allow reading response
-        // Assume success if no error thrown
-        console.log('Order sent to Google Script');
+        console.log('Order sent');
       } catch (err) {
-        console.warn('Google Script request failed:', err);
+        console.warn('Failed:', err);
       }
     }
 
@@ -664,6 +779,7 @@
     cart = [];
     updateCartCount();
     saveCartToStorage();
+    isSubmitting = false;
     showNotification('Cảm ơn bạn! Chúng tôi sẽ gửi link Google Drive các khóa học qua Email trong vài phút. Kiểm tra cả hộp thư spam nhé!', 'success');
   }
 
@@ -692,18 +808,18 @@
 </script>
 
 <!-- ===== COURSES SECTION ===== -->
-<section id="courses" class="py-20 px-4 sm:px-6 bg-white">
+<section id="courses" class="py-20 px-4 sm:px-6 bg-gradient-to-b from-indigo-900/20 to-purple-900/20">
   <div class="max-w-7xl mx-auto">
     <div class="text-center mb-12">
-      <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900 mb-3">Học chất lượng, giá sinh viên</h2>
-      <p class="text-gray-600 text-base max-w-2xl mx-auto mb-2">Thay vì mua khóa học hàng triệu, học ngay qua Google Drive với giá chỉ 50-100k. Nội dung từ các chuyên gia hàng đầu, tiết kiệm 90% chi phí!</p>
-      <p class="text-sm text-primary-600 font-semibold">💡 Hướng dẫn: Chọn khóa học → Thêm vào giỏ → Thanh toán → Nhận link Google Drive qua Email ngay!</p>
+      <h2 class="text-3xl md:text-4xl font-extrabold text-white mb-3">Học chất lượng, giá sinh viên</h2>
+      <p class="text-gray-200 text-base max-w-2xl mx-auto mb-2">Thay vì mua khóa học hàng triệu, học ngay qua Google Drive với giá chỉ 50-100k. Nội dung từ các chuyên gia hàng đầu, tiết kiệm 90% chi phí!</p>
+      <p class="text-sm text-yellow-300 font-semibold">💡 Hướng dẫn: Chọn khóa học → Thêm vào giỏ → Thanh toán → Nhận link Google Drive qua Email ngay!</p>
       <div class="flex flex-wrap justify-center gap-2 mt-6">
-        <button onclick="setFilter('all')" id="filter-all" class="px-4 py-2 rounded-full text-sm font-medium bg-primary-600 text-white hover:bg-primary-700 transition">Tất cả</button>
-        <button onclick="setFilter('ai')" id="filter-ai" class="px-4 py-2 rounded-full text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 transition">AI</button>
-        <button onclick="setFilter('design')" id="filter-design" class="px-4 py-2 rounded-full text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 transition">Thiết kế</button>
-        <button onclick="setFilter('marketing')" id="filter-marketing" class="px-4 py-2 rounded-full text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 transition">Marketing</button>
-        <button onclick="setFilter('office')" id="filter-office" class="px-4 py-2 rounded-full text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 transition">Văn phòng</button>
+        <button onclick="setFilter('all')" id="filter-all" class="px-4 py-2 rounded-full text-sm font-medium bg-yellow-400 text-gray-900 hover:bg-yellow-300 transition shadow-lg">Tất cả</button>
+        <button onclick="setFilter('ai')" id="filter-ai" class="px-4 py-2 rounded-full text-sm font-medium bg-white/20 text-white hover:bg-white/30 transition backdrop-blur-sm">AI</button>
+        <button onclick="setFilter('design')" id="filter-design" class="px-4 py-2 rounded-full text-sm font-medium bg-white/20 text-white hover:bg-white/30 transition backdrop-blur-sm">Thiết kế</button>
+        <button onclick="setFilter('marketing')" id="filter-marketing" class="px-4 py-2 rounded-full text-sm font-medium bg-white/20 text-white hover:bg-white/30 transition backdrop-blur-sm">Marketing</button>
+        <button onclick="setFilter('office')" id="filter-office" class="px-4 py-2 rounded-full text-sm font-medium bg-white/20 text-white hover:bg-white/30 transition backdrop-blur-sm">Văn phòng</button>
       </div>
     </div>
     <div id="course-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"></div>
@@ -1031,19 +1147,27 @@
   <div class="bg-white rounded-xl sm:rounded-2xl shadow-2xl w-full max-w-lg mx-auto my-4 sm:my-8 overflow-hidden animate-slide-up max-h-[95vh] flex flex-col">
     <div class="bg-gradient-to-r from-primary-600 to-purple-600 px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between flex-shrink-0">
       <div>
-        <h3 class="text-white font-bold text-base sm:text-lg">Thanh toán đơn hàng</h3>
-        <p class="text-white/80 text-xs sm:text-sm mt-0.5">Điền thông tin để hoàn tất</p>
+        <h3 class="text-white font-bold text-base sm:text-lg">🎉 Chỉ còn 1 bước nữa!</h3>
+        <p class="text-white/80 text-xs sm:text-sm mt-0.5">Nhận link Google Drive ngay sau khi thanh toán</p>
       </div>
       <button onclick="closeCheckoutModal()" class="text-white/70 hover:text-white text-2xl sm:text-3xl leading-none w-8 h-8 flex items-center justify-center">&times;</button>
     </div>
 
     <div class="p-4 sm:p-6 space-y-4 sm:space-y-5 overflow-y-auto flex-1">
+      <!-- Urgency Banner -->
+      <div class="bg-gradient-to-r from-yellow-400 to-orange-400 rounded-lg p-3 sm:p-4 text-center animate-pulse">
+        <p class="text-gray-900 font-bold text-sm sm:text-base">⚡ Ưu đãi đặc biệt: Giá chỉ 50-100k!</p>
+        <p class="text-gray-800 text-xs sm:text-sm mt-1">Tiết kiệm 90% so với giá gốc hàng triệu</p>
+      </div>
+      
       <div class="bg-primary-50 rounded-lg sm:rounded-xl p-3 sm:p-4 flex-shrink-0">
         <div class="flex justify-between items-center mb-2">
           <span class="text-xs sm:text-sm font-medium text-gray-600">Tổng thanh toán</span>
           <span id="checkout-total" class="text-xl sm:text-2xl font-extrabold text-primary-600">0đ</span>
         </div>
-        <div id="checkout-items-summary" class="space-y-1 text-xs text-gray-500 border-t border-primary-100 pt-2 mt-2 max-h-24 overflow-y-auto"></div>
+        <div id="checkout-items-summary" class="space-y-2 border-t border-primary-100 pt-2 mt-2 max-h-32 overflow-y-auto">
+          <!-- Items will be rendered here with +/- buttons -->
+        </div>
       </div>
 
       <div class="space-y-3 sm:space-y-4">
@@ -1102,6 +1226,19 @@
       <path d="M24 4C12.95 4 4 12.95 4 24c0 8.9 5.83 16.43 13.88 19.02l.35.09v-6.43c-4.45-1.38-7.73-5.47-7.73-10.28 0-5.97 4.85-10.82 10.82-10.82h.01c5.97 0 10.82 4.85 10.82 10.82 0 4.81-3.28 8.9-7.73 10.28v6.43l.35-.09C38.17 40.43 44 32.9 44 24c0-11.05-8.95-20-20-20zm-3.5 24.5h-3v-9h3v9zm5 0h-3v-9h3v9zm5 0h-3v-9h3v9z"/>
     </svg>
   </a>
+</div>
+
+<!-- ===== STICKY CTA BAR (Mobile) ===== -->
+<div id="sticky-cta" class="sticky-cta">
+  <div class="flex items-center justify-between gap-3 max-w-7xl mx-auto">
+    <div class="flex-1 min-w-0">
+      <p class="text-white text-sm font-bold truncate">🔥 Khóa học chỉ 50-100k</p>
+      <p class="text-gray-300 text-xs truncate">Tiết kiệm 90% chi phí</p>
+    </div>
+    <button onclick="document.getElementById('courses').scrollIntoView({behavior:'smooth'})" class="bg-gradient-to-r from-yellow-400 to-orange-400 hover:from-yellow-500 hover:to-orange-500 text-gray-900 font-bold px-6 py-3 rounded-xl shadow-lg whitespace-nowrap text-sm">
+      Xem khóa học
+    </button>
+  </div>
 </div>
 
 <!-- ===== VIDEO MODAL FULLSCREEN ===== -->
