@@ -33,11 +33,10 @@ jobs:
       - name: Create config.js from secrets
         run: |
           cat > config.js << 'EOF'
-          // Telegram Configuration
-          window.TELEGRAM_BOT_TOKEN = '${{ secrets.TELEGRAM_BOT_TOKEN }}';
-          window.TELEGRAM_CHAT_ID = '${{ secrets.TELEGRAM_CHAT_ID }}';
+          // Google Apps Script Configuration
+          window.GOOGLE_SCRIPT_URL = '${{ secrets.GOOGLE_SCRIPT_URL }}';
           EOF
-          echo "✅ Created config.js with secrets"
+          echo "✅ Created config.js with Google Script URL"
       
       - name: Verify config.js was created
         run: |

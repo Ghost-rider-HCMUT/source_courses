@@ -205,8 +205,7 @@
 
 <script>
   // ===== CONFIG =====
-  const TELEGRAM_BOT_TOKEN = window.TELEGRAM_BOT_TOKEN || '';
-  const TELEGRAM_CHAT_ID   = window.TELEGRAM_CHAT_ID || '';
+  const GOOGLE_SCRIPT_URL = window.GOOGLE_SCRIPT_URL || '';
 
   // ===== COURSE DATA =====
   const courses = [
@@ -575,32 +574,33 @@
       return;
     }
 
-    // Build order summary
-    const orderSummary = cart.map(item => `${item.title} x${item.quantity} = ${formatPrice(item.salePrice * item.quantity)}`).join('\n');
-    const total = calculateTotal();
+    // Build order data
+    const orderData = {
+      email: email,
+      phone: phone,
+      items: cart.map(item => ({
+        title: item.title,
+        quantity: item.quantity,
+        price: item.salePrice
+      })),
+      total: calculateTotal()
+    };
 
-    // Send Telegram notification
-    if (TELEGRAM_BOT_TOKEN && TELEGRAM_CHAT_ID) {
-      const message =
-        `🛒 *ĐƠN HÀNG MỚI – Tạp Hóa Kiến Thức*\n\n` +
-        `📦 *Chi tiết đơn hàng:*\n${orderSummary}\n\n` +
-        `💰 *Tổng tiền:* ${formatPrice(total)}\n\n` +
-        `📧 *Email:* ${email}\n` +
-        `📱 *SĐT:* ${phone || 'Không cung cấp'}\n\n` +
-        `⚠️ *Lưu ý:* Gửi link Google Drive các khóa học đã mua về email khách hàng!`;
-
+    // Send to Google Apps Script
+    if (GOOGLE_SCRIPT_URL) {
       try {
-        await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+        const response = await fetch(GOOGLE_SCRIPT_URL, {
           method: 'POST',
+          mode: 'no-cors', // Important for Google Apps Script
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            chat_id: TELEGRAM_CHAT_ID,
-            text: message,
-            parse_mode: 'Markdown'
-          })
+          body: JSON.stringify(orderData)
         });
+        
+        // Note: no-cors mode doesn't allow reading response
+        // Assume success if no error thrown
+        console.log('Order sent to Google Script');
       } catch (err) {
-        console.warn('Telegram notify failed:', err);
+        console.warn('Google Script request failed:', err);
       }
     }
 
