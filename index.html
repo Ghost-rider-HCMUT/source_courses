@@ -256,6 +256,9 @@
     updateCartCount();
     loadCartFromStorage();
     
+    // Handle URL routing on page load
+    handleRouting();
+    
     // Check if should open cart (from preview page)
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get('cart') === 'open') {
@@ -290,6 +293,29 @@
       lastScroll = currentScroll;
     });
   });
+  
+  // Handle browser back/forward buttons
+  window.addEventListener('popstate', function(e) {
+    handleRouting();
+  });
+  
+  // Handle URL routing
+  function handleRouting() {
+    const hash = window.location.hash;
+    
+    if (hash.startsWith('#course-')) {
+      const courseId = parseInt(hash.replace('#course-', ''));
+      if (!isNaN(courseId)) {
+        viewCourseDetail(courseId);
+      }
+    } else if (hash === '#home' || hash === '') {
+      // Close preview if open
+      const previewScreen = document.getElementById('preview-screen');
+      if (previewScreen && !previewScreen.classList.contains('hidden')) {
+        closePreview();
+      }
+    }
+  }
   function loadCartFromStorage() {
     const stored = localStorage.getItem('cart');
     if (stored) {
@@ -382,6 +408,9 @@
   function viewCourseDetail(courseId) {
     const course = courses.find(c => c.id === courseId);
     if (!course) return;
+
+    // Update URL without triggering popstate
+    window.history.pushState({ courseId: courseId }, '', `#course-${courseId}`);
 
     // Populate preview screen
     document.getElementById('preview-badge').textContent = course.badge;
@@ -491,12 +520,28 @@
     document.getElementById('preview-screen').classList.add('hidden');
     document.body.style.overflow = '';
     window.currentVideoUrl = '';
+    
+    // Update URL to #home
+    window.history.pushState({ page: 'home' }, '', '#home');
   }
 
   function addToCartFromPreview() {
     if (window.currentPreviewCourse) {
-      addToCart(window.currentPreviewCourse);
+      const course = courses.find(c => c.id === window.currentPreviewCourse);
+      const existing = cart.find(item => item.id === window.currentPreviewCourse);
+      
+      if (existing) {
+        existing.quantity++;
+      } else {
+        cart.push({ ...course, quantity: 1 });
+      }
+      
+      updateCartCount();
+      saveCartToStorage();
       closePreview();
+      
+      // Mở checkout luôn
+      openCheckoutModal();
     }
   }
 
@@ -1218,12 +1263,6 @@
   <a href="https://t.me/phong_hq" target="_blank" rel="noopener noreferrer" class="contact-btn" style="background: linear-gradient(135deg, #0088cc 0%, #00a0e9 100%);" title="Chat với chúng tôi qua Telegram" aria-label="Liên hệ Telegram">
     <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="white">
       <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.161c-.18.717-1.969 9.27-2.781 12.293-.344 1.28-.766 1.71-1.257 1.751-.535.049-1.061-.354-1.646-.693-2.003-1.162-3.135-1.885-5.082-3.018-2.252-1.31-.792-2.03.491-3.206.336-.308 6.177-5.66 6.288-6.142.014-.06.027-.285-.106-.404-.133-.119-.329-.078-.47-.046-.2.046-3.39 2.154-9.571 6.326-.906.622-1.727.925-2.463.91-.811-.017-2.37-.458-3.529-.835-1.42-.462-2.548-.706-2.45-1.49.051-.408.607-.825 1.668-1.25 6.537-2.847 10.895-4.725 13.073-5.634 6.226-2.589 7.518-3.04 8.363-3.055.185-.003.599.043.867.262.226.185.288.435.318.611.03.176.067.577.037.89z"/>
-    </svg>
-  </a>
-  
-  <a href="https://zalo.me/0327728248" target="_blank" rel="noopener noreferrer" class="contact-btn" style="background: linear-gradient(135deg, #0068ff 0%, #0180ff 100%);" title="Chat với chúng tôi qua Zalo" aria-label="Liên hệ Zalo">
-    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 48 48" fill="white">
-      <path d="M24 4C12.95 4 4 12.95 4 24c0 8.9 5.83 16.43 13.88 19.02l.35.09v-6.43c-4.45-1.38-7.73-5.47-7.73-10.28 0-5.97 4.85-10.82 10.82-10.82h.01c5.97 0 10.82 4.85 10.82 10.82 0 4.81-3.28 8.9-7.73 10.28v6.43l.35-.09C38.17 40.43 44 32.9 44 24c0-11.05-8.95-20-20-20zm-3.5 24.5h-3v-9h3v9zm5 0h-3v-9h3v9zm5 0h-3v-9h3v9z"/>
     </svg>
   </a>
 </div>
