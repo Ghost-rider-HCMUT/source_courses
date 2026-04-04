@@ -303,8 +303,10 @@
   function handleRouting() {
     const hash = window.location.hash;
     
-    if (hash.startsWith('#course-')) {
-      const courseId = parseInt(hash.replace('#course-', ''));
+    // Match pattern: #category/id (e.g., #marketing/5, #ai/1)
+    const match = hash.match(/#([^/]+)\/(\d+)/);
+    if (match) {
+      const courseId = parseInt(match[2]);
       if (!isNaN(courseId)) {
         viewCourseDetail(courseId);
       }
@@ -409,8 +411,8 @@
     const course = courses.find(c => c.id === courseId);
     if (!course) return;
 
-    // Update URL without triggering popstate
-    window.history.pushState({ courseId: courseId }, '', `#course-${courseId}`);
+    // Update URL with category/id format (e.g., #marketing/5)
+    window.history.pushState({ courseId: courseId }, '', `#${course.category}/${courseId}`);
 
     // Populate preview screen
     document.getElementById('preview-badge').textContent = course.badge;
