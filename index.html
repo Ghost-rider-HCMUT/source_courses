@@ -43,7 +43,7 @@
     .float-animation { animation: float 3s ease-in-out infinite; }
     
     /* Contact Buttons */
-    .contact-buttons { position: fixed; right: 16px; bottom: 80px; z-index: 40; display: flex; flex-direction: column; gap: 12px; }
+    .contact-buttons { position: fixed; right: 16px; bottom: 80px; z-index: 60; display: flex; flex-direction: column; gap: 12px; }
     @media (max-width: 640px) { .contact-buttons { right: 12px; bottom: 70px; gap: 10px; } }
     
     .contact-btn { 
@@ -426,15 +426,22 @@
     // Store video URL for opening in new tab
     window.currentVideoUrl = course.videoDemo || '';
 
-    // Render chapters
+    // Render chapters for both desktop and mobile
     if (course.chapters && course.chapters.length > 0) {
-      const chaptersContainer = document.getElementById('preview-chapters');
-      chaptersContainer.innerHTML = course.chapters.map((ch, idx) => `
-        <div class="flex items-start gap-3 p-3 bg-primary-50 rounded-lg hover:bg-primary-100 transition-all border border-primary-100">
-          <div class="w-8 h-8 bg-gradient-to-br from-primary-500 to-purple-500 text-white rounded-lg flex items-center justify-center font-bold text-sm flex-shrink-0">${idx + 1}</div>
-          <span class="text-sm text-gray-800 leading-relaxed pt-1">${ch}</span>
+      const chapterHTML = course.chapters.map((ch, idx) => `
+        <div class="flex items-start gap-2 sm:gap-3 p-2 sm:p-3 bg-primary-50 rounded-lg hover:bg-primary-100 transition-all border border-primary-100">
+          <div class="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-br from-primary-500 to-purple-500 text-white rounded-lg flex items-center justify-center font-bold text-xs sm:text-sm flex-shrink-0">${idx + 1}</div>
+          <span class="text-xs sm:text-sm text-gray-800 leading-relaxed pt-0.5 sm:pt-1">${ch}</span>
         </div>
       `).join('');
+      
+      // Desktop chapters
+      const chaptersContainer = document.getElementById('preview-chapters');
+      if (chaptersContainer) chaptersContainer.innerHTML = chapterHTML;
+      
+      // Mobile chapters
+      const chaptersContainerMobile = document.getElementById('preview-chapters-mobile');
+      if (chaptersContainerMobile) chaptersContainerMobile.innerHTML = chapterHTML;
     }
 
     // Store current course for add to cart
@@ -1027,118 +1034,116 @@
   </header>
 
   <!-- Main Content -->
-  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-8">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-8">
       
       <!-- Left: Video & Info -->
-      <div class="lg:col-span-2 space-y-6">
-        <!-- Course Header -->
-        <div class="bg-white rounded-2xl p-6 shadow-md border border-gray-100">
-          <div class="flex items-start justify-between mb-4">
-            <div class="flex-1">
-              <span id="preview-badge" class="inline-block text-xs font-bold px-3 py-1.5 rounded-full mb-3"></span>
-              <h1 id="preview-title" class="text-3xl font-extrabold text-gray-900 mb-2"></h1>
-              <p id="preview-desc" class="text-gray-600 leading-relaxed"></p>
-            </div>
-          </div>
+      <div class="lg:col-span-2 space-y-4 sm:space-y-6">
+        <!-- Course Header - Compact -->
+        <div class="bg-white rounded-xl sm:rounded-2xl p-3 sm:p-6 shadow-md border border-gray-100">
+          <span id="preview-badge" class="inline-block text-xs font-bold px-3 py-1.5 rounded-full mb-2"></span>
+          <h1 id="preview-title" class="text-lg sm:text-3xl font-extrabold text-gray-900 mb-2 leading-tight"></h1>
+          <p id="preview-desc" class="text-xs sm:text-base text-gray-600 leading-relaxed mb-3"></p>
           
-          <div class="flex items-center gap-6 text-sm text-gray-500 pt-4 border-t border-gray-100">
-            <div class="flex items-center gap-2">
+          <div class="flex items-center gap-3 sm:gap-6 text-xs sm:text-sm text-gray-500">
+            <div class="flex items-center gap-1.5">
               <span>📚</span>
               <span><span id="preview-lessons"></span> chương</span>
             </div>
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-1.5">
               <span>☁️</span>
-              <span>Google Drive</span>
+              <span>Drive</span>
             </div>
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-1.5">
               <span>⏱️</span>
-              <span>Truy cập trọn đời</span>
+              <span>Trọn đời</span>
             </div>
           </div>
         </div>
 
-        <!-- Video Player -->
-        <div class="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-md border border-gray-100">
-          <div class="flex items-center gap-2 mb-3 sm:mb-4">
-            <span class="text-xl sm:text-2xl">🎬</span>
-            <h2 class="text-base sm:text-xl font-bold text-gray-900">Video học thử miễn phí</h2>
+        <!-- Video Player - Compact -->
+        <div class="bg-white rounded-xl sm:rounded-2xl p-3 sm:p-6 shadow-md border border-gray-100">
+          <div class="flex items-center gap-2 mb-2 sm:mb-3">
+            <span class="text-lg sm:text-2xl">🎬</span>
+            <h2 class="text-sm sm:text-xl font-bold text-gray-900">Video học thử</h2>
           </div>
-          <div class="aspect-video bg-gradient-to-br from-primary-600 to-purple-600 rounded-lg sm:rounded-xl overflow-hidden shadow-lg relative group cursor-pointer" id="preview-video-container" onclick="openVideoModal()">
+          <div class="aspect-video bg-gradient-to-br from-primary-600 to-purple-600 rounded-lg sm:rounded-xl overflow-hidden shadow-lg relative group cursor-pointer" onclick="openVideoModal()">
             <div class="absolute inset-0 flex flex-col items-center justify-center text-white">
-              <div class="w-16 h-16 sm:w-20 sm:h-20 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center mb-3 sm:mb-4 group-hover:scale-110 transition-transform">
-                <svg class="w-8 h-8 sm:w-10 sm:h-10" fill="currentColor" viewBox="0 0 24 24">
+              <div class="w-14 h-14 sm:w-20 sm:h-20 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center mb-2 sm:mb-4 group-hover:scale-110 transition-transform">
+                <svg class="w-7 h-7 sm:w-10 sm:h-10" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M8 5v14l11-7z"/>
                 </svg>
               </div>
-              <p class="text-base sm:text-lg font-bold">Click để xem video học thử</p>
-              <p class="text-xs sm:text-sm text-white/80 mt-2">Xem ngay tại đây</p>
+              <p class="text-sm sm:text-lg font-bold">Xem video học thử</p>
             </div>
           </div>
-          <div class="mt-3 sm:mt-4 bg-yellow-50 border border-yellow-200 rounded-lg sm:rounded-xl p-3 sm:p-4 flex items-start gap-2 sm:gap-3">
-            <span class="text-xl sm:text-2xl flex-shrink-0">💡</span>
-            <p class="text-xs sm:text-sm text-gray-700 leading-relaxed">
-              <strong>Xem video học thử</strong> để hiểu rõ hơn về nội dung và chất lượng khóa học. Đây chỉ là 1 phần nhỏ trong khóa học đầy đủ!
-            </p>
-          </div>
         </div>
 
-        <!-- Course Description -->
-        <div class="bg-white rounded-2xl p-6 shadow-md border border-gray-100">
-          <div class="flex items-center gap-2 mb-4">
-            <span class="text-2xl">📝</span>
-            <h2 class="text-xl font-bold text-gray-900">Bạn sẽ học được gì?</h2>
-          </div>
-          <ul class="space-y-3">
-            <li class="flex items-start gap-3">
-              <span class="text-green-500 text-xl flex-shrink-0">✓</span>
-              <span class="text-gray-700">Làm chủ công cụ AI để tạo video tự động, tiết kiệm thời gian</span>
-            </li>
-            <li class="flex items-start gap-3">
-              <span class="text-green-500 text-xl flex-shrink-0">✓</span>
-              <span class="text-gray-700">Xây dựng kênh TikTok, Fanpage bán hàng hiệu quả</span>
-            </li>
-            <li class="flex items-start gap-3">
-              <span class="text-green-500 text-xl flex-shrink-0">✓</span>
-              <span class="text-gray-700">Kiếm tiền từ Affiliate Shopee, TikTok Shop một cách bài bản</span>
-            </li>
-            <li class="flex items-start gap-3">
-              <span class="text-green-500 text-xl flex-shrink-0">✓</span>
-              <span class="text-gray-700">Tự động hóa quy trình làm việc, tăng thu nhập thụ động</span>
-            </li>
-          </ul>
-        </div>
-      </div>
-
-      <!-- Right: Chapters & CTA -->
-      <div class="space-y-6">
-        <!-- Chapters List -->
-        <div class="bg-white rounded-2xl p-6 shadow-md border border-gray-100 lg:sticky lg:top-24">
-          <div class="flex items-center gap-2 mb-4">
-            <span class="text-2xl">📖</span>
-            <h2 class="text-lg font-bold text-gray-900">Nội dung chi tiết</h2>
-          </div>
-          <div id="preview-chapters" class="space-y-2 max-h-96 overflow-y-auto pr-2"></div>
-        </div>
-
-        <!-- Price & CTA -->
-        <div class="bg-gradient-to-br from-primary-600 to-purple-600 rounded-2xl p-6 shadow-xl lg:sticky lg:top-[540px]">
-          <div class="text-center mb-4">
-            <p class="text-white/80 text-sm mb-2">Giá khóa học</p>
-            <div class="flex items-center justify-center gap-3 mb-2">
-              <span id="preview-price-original" class="line-through text-white/60 text-lg"></span>
-              <span id="preview-price-sale" class="text-4xl font-extrabold text-yellow-300"></span>
+        <!-- Price & CTA - Right below video -->
+        <div class="bg-gradient-to-br from-primary-600 to-purple-600 rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-xl">
+          <div class="text-center mb-3 sm:mb-4">
+            <p class="text-white/80 text-xs sm:text-sm mb-2">Giá khóa học</p>
+            <div class="flex items-center justify-center gap-2 sm:gap-3 mb-2">
+              <span id="preview-price-original" class="line-through text-white/60 text-base sm:text-lg"></span>
+              <span id="preview-price-sale" class="text-3xl sm:text-4xl font-extrabold text-yellow-300"></span>
             </div>
             <p class="text-white/70 text-xs">💰 Giá siêu rẻ - Học qua Google Drive</p>
           </div>
           
-          <button onclick="addToCartFromPreview()" class="w-full bg-white hover:bg-yellow-300 text-primary-700 font-bold py-4 rounded-xl transition-all shadow-lg hover:shadow-2xl transform hover:scale-105 text-base mb-3">
-            🛒 Thêm vào giỏ hàng
+          <button onclick="addToCartFromPreview()" class="w-full bg-white hover:bg-yellow-300 text-primary-700 font-bold py-3 sm:py-4 rounded-xl transition-all shadow-lg hover:shadow-2xl transform hover:scale-105 text-sm sm:text-base mb-2 sm:mb-3">
+            🛒 Mua ngay
           </button>
           
-          <button onclick="closePreview()" class="w-full text-center bg-white/10 hover:bg-white/20 text-white font-medium py-3 rounded-xl transition-all text-sm border border-white/30">
+          <button onclick="closePreview()" class="w-full text-center bg-white/10 hover:bg-white/20 text-white font-medium py-2 sm:py-3 rounded-xl transition-all text-xs sm:text-sm border border-white/30">
             Xem thêm khóa học khác
           </button>
+        </div>
+
+        <!-- Course Description - Compact -->
+        <div class="bg-white rounded-xl sm:rounded-2xl p-3 sm:p-6 shadow-md border border-gray-100">
+          <div class="flex items-center gap-2 mb-2 sm:mb-3">
+            <span class="text-lg sm:text-2xl">📝</span>
+            <h2 class="text-sm sm:text-xl font-bold text-gray-900">Bạn sẽ học được gì?</h2>
+          </div>
+          <ul class="space-y-2">
+            <li class="flex items-start gap-2">
+              <span class="text-green-500 text-base sm:text-xl flex-shrink-0">✓</span>
+              <span class="text-xs sm:text-base text-gray-700">Làm chủ AI tạo video tự động</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-green-500 text-base sm:text-xl flex-shrink-0">✓</span>
+              <span class="text-xs sm:text-base text-gray-700">Xây kênh TikTok, Fanpage bán hàng</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-green-500 text-base sm:text-xl flex-shrink-0">✓</span>
+              <span class="text-xs sm:text-base text-gray-700">Kiếm tiền Affiliate Shopee, TikTok</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-green-500 text-base sm:text-xl flex-shrink-0">✓</span>
+              <span class="text-xs sm:text-base text-gray-700">Tự động hóa, tăng thu nhập thụ động</span>
+            </li>
+          </ul>
+        </div>
+        
+        <!-- Chapters List - Mobile Only -->
+        <div class="lg:hidden bg-white rounded-xl p-3 shadow-md border border-gray-100">
+          <div class="flex items-center gap-2 mb-3">
+            <span class="text-xl">📖</span>
+            <h2 class="text-sm font-bold text-gray-900">Nội dung chi tiết</h2>
+          </div>
+          <div id="preview-chapters-mobile" class="space-y-2"></div>
+        </div>
+      </div>
+
+      <!-- Right: Chapters (Desktop Only) -->
+      <div class="hidden lg:block space-y-4 sm:space-y-6">
+        <!-- Chapters List -->
+        <div class="bg-white rounded-2xl p-4 sm:p-6 shadow-md border border-gray-100 sticky top-24">
+          <div class="flex items-center gap-2 mb-3 sm:mb-4">
+            <span class="text-xl sm:text-2xl">📖</span>
+            <h2 class="text-sm sm:text-lg font-bold text-gray-900">Nội dung chi tiết</h2>
+          </div>
+          <div id="preview-chapters" class="space-y-2 max-h-96 overflow-y-auto pr-2"></div>
         </div>
       </div>
     </div>
@@ -1265,6 +1270,12 @@
   <a href="https://t.me/phong_hq" target="_blank" rel="noopener noreferrer" class="contact-btn" style="background: linear-gradient(135deg, #0088cc 0%, #00a0e9 100%);" title="Chat với chúng tôi qua Telegram" aria-label="Liên hệ Telegram">
     <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="white">
       <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.161c-.18.717-1.969 9.27-2.781 12.293-.344 1.28-.766 1.71-1.257 1.751-.535.049-1.061-.354-1.646-.693-2.003-1.162-3.135-1.885-5.082-3.018-2.252-1.31-.792-2.03.491-3.206.336-.308 6.177-5.66 6.288-6.142.014-.06.027-.285-.106-.404-.133-.119-.329-.078-.47-.046-.2.046-3.39 2.154-9.571 6.326-.906.622-1.727.925-2.463.91-.811-.017-2.37-.458-3.529-.835-1.42-.462-2.548-.706-2.45-1.49.051-.408.607-.825 1.668-1.25 6.537-2.847 10.895-4.725 13.073-5.634 6.226-2.589 7.518-3.04 8.363-3.055.185-.003.599.043.867.262.226.185.288.435.318.611.03.176.067.577.037.89z"/>
+    </svg>
+  </a>
+  
+  <a href="https://www.facebook.com/quan.le21hcmut" target="_blank" rel="noopener noreferrer" class="contact-btn" style="background: linear-gradient(135deg, #1877f2 0%, #0d65d9 100%);" title="Liên hệ qua Facebook" aria-label="Liên hệ Facebook">
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="white">
+      <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
     </svg>
   </a>
 </div>
